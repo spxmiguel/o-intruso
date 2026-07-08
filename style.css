@@ -186,6 +186,62 @@ body {
   box-shadow: 0 1px 0 var(--oliva-escuro), 0 2px 6px var(--sombra);
 }
 
+.btn-secondary {
+  background-color: var(--papel);
+  color: var(--marrom-claro);
+  border: 3px dashed var(--marrom-claro);
+  box-shadow: none;
+  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
+  padding: 14px 28px;
+  min-height: auto;
+}
+
+.btn-secondary:active {
+  transform: translateY(2px);
+}
+
+/* ---------- Tela de entrada manual do cupom ---------- */
+
+.entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 0 22px;
+}
+
+.entry-input {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  font-weight: bold;
+  letter-spacing: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 14px 12px;
+  border: 3px solid var(--marrom-claro);
+  border-radius: 6px;
+  background-color: var(--papel);
+  color: var(--marrom);
+}
+
+.entry-input:focus {
+  outline: none;
+  border-color: var(--oliva);
+}
+
+.login-error {
+  color: var(--vermelho);
+  font-size: 0.9rem;
+  margin: -6px 0 0;
+}
+
+.free-play-divider {
+  color: var(--marrom-claro);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 4px 0 16px;
+}
+
 /* ---------- Tela do jogo ---------- */
 
 #game-screen {
@@ -210,6 +266,18 @@ body {
   color: var(--marrom-claro);
   font-size: clamp(0.9rem, 2.2vw, 1.05rem);
   margin: 0;
+}
+
+.mode-badge {
+  display: inline-block;
+  background-color: var(--vermelho);
+  color: var(--papel);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  font-weight: bold;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin: 0 0 10px;
 }
 
 .grid {
@@ -429,6 +497,15 @@ body {
 
 .prize-code strong {
   color: var(--dourado-claro);
+}
+
+.prize-box-warning {
+  background-color: var(--vermelho);
+  border-color: var(--papel);
+}
+
+.prize-box-warning .prize-text {
+  margin: 0;
 }
 
 /* ---------- Overlay de derrota ---------- */

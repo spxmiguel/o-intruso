@@ -17,13 +17,22 @@
     </div>
   </section>
 
-  <!-- TELA DE ERRO (cupom inválido / sem cupom) -->
-  <section id="error-screen" class="screen hidden">
+  <!-- TELA DE ENTRADA MANUAL (QR não leu / sem código na URL) -->
+  <section id="entry-screen" class="screen hidden">
     <div class="paper-frame">
-      <p class="stamp stamp-red">CUPOM INVÁLIDO</p>
-      <h1 class="title title-sm">Ops!</h1>
-      <p class="subtitle" id="error-message">Não conseguimos validar esse cupom.</p>
-      <p class="instructions">Procure a equipe do estande para pegar um cupom válido.</p>
+      <p class="stamp">FEIRA DE CIÊNCIAS &middot; 1939&ndash;1945</p>
+      <h1 class="title title-sm">O INTRUSO</h1>
+      <p class="subtitle">Não conseguimos ler o QR code automaticamente.</p>
+      <p class="instructions">Digite o código impresso no seu cupom:</p>
+
+      <form id="entry-form" class="entry-form">
+        <input id="entry-input" class="entry-input" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" maxlength="10" placeholder="EX: A47K2X" required>
+        <p id="entry-error" class="login-error hidden"></p>
+        <button class="btn btn-primary" type="submit">VALIDAR CUPOM</button>
+      </form>
+
+      <p class="free-play-divider">ou</p>
+      <button id="free-play-btn" class="btn btn-secondary" type="button">🎲 Jogar sem cupom (não vale prêmio)</button>
     </div>
   </section>
 
@@ -52,6 +61,7 @@
   <!-- TELA DO JOGO -->
   <section id="game-screen" class="screen hidden">
     <header class="game-header">
+      <p id="mode-badge" class="mode-badge hidden">MODO TESTE &mdash; NÃO VALE PRÊMIO</p>
       <h2 class="game-title">Qual é o Intruso?</h2>
       <p class="game-hint" id="game-hint">Toque no objeto que não tem origem na guerra</p>
     </header>
@@ -64,11 +74,11 @@
   <!-- OVERLAY DE ACERTO -->
   <div id="win-overlay" class="overlay hidden">
     <div class="paper-frame win-frame">
-      <p class="stamp stamp-gold">GANHOU! 🎉</p>
+      <p id="win-stamp" class="stamp stamp-gold">GANHOU! 🎉</p>
       <h2 id="win-title" class="win-title"></h2>
       <p id="win-explanation" class="win-explanation"></p>
 
-      <div class="prize-box">
+      <div id="prize-box" class="prize-box">
         <p class="prize-text">Mostra essa tela pra equipe e pega sua bala!</p>
         <p class="prize-code">Cupom: <strong id="win-ticket-code">------</strong></p>
       </div>
@@ -88,7 +98,7 @@
       <h3 class="win-subheading">E os outros objetos?</h3>
       <ul id="lose-list" class="win-list"></ul>
 
-      <p class="instructions">Esse cupom já foi usado. Pega um cupom novo pra tentar de novo!</p>
+      <p id="lose-footer" class="instructions">Esse cupom já foi usado. Pega um cupom novo pra tentar de novo!</p>
     </div>
   </div>
 

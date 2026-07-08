@@ -6,6 +6,7 @@
 
 const GAME_CONFIG = {
   maxErros: 2, // quantas tentativas erradas são permitidas antes de perder (0 = só uma chance)
+  masterCode: "TESTTUTS", // cupom da equipe: ilimitado, nunca é marcado como usado
   items: [
     {
       id: "relogio",
@@ -73,34 +74,42 @@ const db = getFirestore(app);
 
 const screens = {
   loading: document.getElementById("loading-screen"),
-  error: document.getElementById("error-screen"),
+  entry: document.getElementById("entry-screen"),
   used: document.getElementById("used-screen"),
   start: document.getElementById("start-screen"),
   game: document.getElementById("game-screen")
 };
 
-const loadingText = document.getElementById("loading-text");
-const errorMessage = document.getElementById("error-message");
+const entryForm = document.getElementById("entry-form");
+const entryInput = document.getElementById("entry-input");
+const entryError = document.getElementById("entry-error");
+const freePlayBtn = document.getElementById("free-play-btn");
+
 const startTicketCode = document.getElementById("start-ticket-code");
 const playBtn = document.getElementById("play-btn");
 
 const grid = document.getElementById("grid");
 const gameHint = document.getElementById("game-hint");
+const modeBadge = document.getElementById("mode-badge");
 const feedbackPanel = document.getElementById("feedback-panel");
 
 const winOverlay = document.getElementById("win-overlay");
+const winStamp = document.getElementById("win-stamp");
 const winTitle = document.getElementById("win-title");
 const winExplanation = document.getElementById("win-explanation");
 const winList = document.getElementById("win-list");
+const prizeBox = document.getElementById("prize-box");
 const winTicketCode = document.getElementById("win-ticket-code");
 
 const loseOverlay = document.getElementById("lose-overlay");
-const loseTitle = document.getElementById("lose-title");
 const loseExplanation = document.getElementById("lose-explanation");
 const loseList = document.getElementById("lose-list");
+const loseFooter = document.getElementById("lose-footer");
 
 let ticketCode = null;
 let ticketRef = null;
+let isMaster = false;
+let freePlay = false;
 let solved = false;
 let wrongCount = 0;
 const wrongIds = new Set();
@@ -121,28 +130,45 @@ function shuffle(array) {
 
 async function init() {
   const params = new URLSearchParams(window.location.search);
-  ticketCode = (params.get("codigo") || "").trim().toUpperCase();
+  const codeFromUrl = (params.get("codigo") || "").trim().toUpperCase();
 
-  if (!ticketCode) {
-    errorMessage.textContent = "Escaneie o QR code do seu cupom pra jogar.";
-    showScreen("error");
+  if (codeFromUrl) {
+    await validateCode(codeFromUrl);
+  } else {
+    showScreen("entry");
+  }
+}
+
+function showEntryError(message) {
+  entryError.textContent = message;
+  entryError.classList.remove("hidden");
+  showScreen("entry");
+}
+
+async function validateCode(code) {
+  showScreen("loading");
+
+  if (code === GAME_CONFIG.masterCode) {
+    ticketCode = code;
+    ticketRef = null;
+    isMaster = true;
+    freePlay = false;
+    startTicketCode.textContent = `${code} (ilimitado)`;
+    showScreen("start");
     return;
   }
 
-  ticketRef = doc(db, "tickets", ticketCode);
-
+  const ref = doc(db, "tickets", code);
   let ticketSnap;
   try {
-    ticketSnap = await getDoc(ticketRef);
+    ticketSnap = await getDoc(ref);
   } catch (err) {
-    errorMessage.textContent = "Não conseguimos conectar. Verifique sua internet e recarregue a página.";
-    showScreen("error");
+    showEntryError("Não conseguimos conectar. Verifique sua internet e tente de novo.");
     return;
   }
 
   if (!ticketSnap.exists()) {
-    errorMessage.textContent = "Esse cupom não existe. Confira o código ou procure a equipe.";
-    showScreen("error");
+    showEntryError(`O cupom "${code}" não existe. Confira o código ou procure a equipe.`);
     return;
   }
 
@@ -154,23 +180,28 @@ async function init() {
   // Reserva o cupom via transação: só o primeiro acesso simultâneo consegue.
   try {
     await runTransaction(db, async (tx) => {
-      const snap = await tx.get(ticketRef);
+      const snap = await tx.get(ref);
       if (!snap.exists() || snap.data().usado) {
         throw new Error("ALREADY_USED");
       }
-      tx.update(ticketRef, { usado: true, jogadoEm: serverTimestamp() });
+      tx.update(ref, { usado: true, jogadoEm: serverTimestamp() });
     });
   } catch (err) {
     showScreen("used");
     return;
   }
 
-  startTicketCode.textContent = ticketCode;
+  ticketCode = code;
+  ticketRef = ref;
+  isMaster = false;
+  freePlay = false;
+  startTicketCode.textContent = code;
   showScreen("start");
 }
 
 function startGame() {
   showScreen("game");
+  modeBadge.classList.toggle("hidden", !freePlay);
   solved = false;
   wrongCount = 0;
   wrongIds.clear();
@@ -233,6 +264,8 @@ function handleCardClick(item, cardEl) {
 }
 
 async function finishTicket(resultado) {
+  // Cupom mestre e modo sem cupom não gravam nada no Firestore.
+  if (isMaster || freePlay || !ticketRef) return;
   try {
     await updateDoc(ticketRef, { resultado, finalizadoEm: serverTimestamp() });
   } catch (err) {
@@ -250,10 +283,9 @@ function showWrongFeedback(item) {
   feedbackPanel.classList.add("show");
 }
 
-function buildOtherItemsList(listEl, excludeIntruder) {
+function buildOtherItemsList(listEl) {
   listEl.innerHTML = "";
   GAME_CONFIG.items
-    .filter((item) => !item.isIntruder || !excludeIntruder)
     .filter((item) => !item.isIntruder)
     .forEach((item) => {
       const li = document.createElement("li");
@@ -268,18 +300,55 @@ function buildOtherItemsList(listEl, excludeIntruder) {
 function showWinOverlay(intruderItem) {
   winTitle.textContent = `${intruderItem.emoji} ${intruderItem.name} é o Intruso!`;
   winExplanation.textContent = intruderItem.origin;
-  winTicketCode.textContent = ticketCode;
-  buildOtherItemsList(winList, true);
+  buildOtherItemsList(winList);
+
+  if (freePlay) {
+    winStamp.textContent = "PARABÉNS! 🎉";
+    prizeBox.classList.add("prize-box-warning");
+    prizeBox.innerHTML = `
+      <p class="prize-text">⚠️ Modo sem cupom — essa partida não vale bala. Foi só um teste!</p>
+    `;
+  } else {
+    winStamp.textContent = "GANHOU! 🎉";
+    prizeBox.classList.remove("prize-box-warning");
+    prizeBox.innerHTML = `
+      <p class="prize-text">Mostra essa tela pra equipe e pega sua bala!</p>
+      <p class="prize-code">Cupom: <strong id="win-ticket-code">${ticketCode}</strong></p>
+    `;
+  }
+
   winOverlay.classList.remove("hidden");
 }
 
-function showLoseOverlay(lastWrongItem) {
+function showLoseOverlay() {
   const intruderItem = GAME_CONFIG.items.find((item) => item.isIntruder);
   loseExplanation.textContent = `O intruso era ${intruderItem.emoji} ${intruderItem.name}: ${intruderItem.origin}`;
-  buildOtherItemsList(loseList, true);
+  buildOtherItemsList(loseList);
+  loseFooter.textContent = freePlay
+    ? "Isso foi só um teste (modo sem cupom). Pega um cupom de verdade com a equipe pra jogar valendo!"
+    : "Esse cupom já foi usado. Pega um cupom novo pra tentar de novo!";
   loseOverlay.classList.remove("hidden");
 }
 
 playBtn.addEventListener("click", startGame);
+
+entryForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const code = entryInput.value.trim().toUpperCase();
+  if (!code) return;
+  entryError.classList.add("hidden");
+  history.replaceState(null, "", `?codigo=${encodeURIComponent(code)}`);
+  await validateCode(code);
+});
+
+freePlayBtn.addEventListener("click", () => {
+  ticketCode = null;
+  ticketRef = null;
+  isMaster = false;
+  freePlay = true;
+  history.replaceState(null, "", window.location.pathname);
+  startTicketCode.textContent = "modo teste";
+  showScreen("start");
+});
 
 init();
