@@ -6,6 +6,8 @@
    "name" e "origin". Imagens ficam em /images.
    ========================================================= */
 
+const ADMIN_EMAIL = "equipe@ointruso.app"; // login fixo da equipe (a senha nunca fica aqui)
+
 const GAME_CONFIG = {
   maxErrosPorRodada: 1, // erros permitidos antes de a rodada ser considerada errada
   rounds: [
@@ -244,7 +246,6 @@ const playBtn = document.getElementById("play-btn");
 
 const showTicketBtn = document.getElementById("show-ticket-btn");
 const replayFreeBtn = document.getElementById("replay-free-btn");
-const adminEmailInput = document.getElementById("admin-email-input");
 const adminPinInput = document.getElementById("admin-pin-input");
 const adminUnlockBtn = document.getElementById("admin-unlock-btn");
 const adminUnlockMsg = document.getElementById("admin-unlock-msg");
@@ -322,7 +323,6 @@ async function init() {
 function showBlockedScreen(data) {
   showScreen("blocked");
   showTicketBtn.classList.toggle("hidden", data.resultado !== "ganhou");
-  adminEmailInput.value = "";
   adminPinInput.value = "";
   adminUnlockMsg.classList.add("hidden");
 }
@@ -530,11 +530,10 @@ function showTicketScreen() {
 
 async function handleAdminUnlock() {
   adminUnlockMsg.classList.remove("hidden");
-  const email = adminEmailInput.value.trim();
   const password = adminPinInput.value;
 
-  if (!email || !password) {
-    adminUnlockMsg.textContent = "Preenche e-mail e senha.";
+  if (!password) {
+    adminUnlockMsg.textContent = "Escreve a senha.";
     adminUnlockMsg.className = "admin-unlock-msg admin-unlock-error";
     return;
   }
@@ -543,13 +542,13 @@ async function handleAdminUnlock() {
   try {
     // A senha nunca fica no código-fonte: ela é conferida pelo próprio
     // servidor de autenticação do Firebase, não pelo navegador.
-    await signInWithEmailAndPassword(auth, email, password);
+    await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
     await deleteDoc(deviceRef);
     adminUnlockMsg.textContent = "Desbloqueado! Recarregando...";
     adminUnlockMsg.className = "admin-unlock-msg admin-unlock-ok";
     setTimeout(() => window.location.reload(), 800);
   } catch (e) {
-    adminUnlockMsg.textContent = "E-mail ou senha incorretos.";
+    adminUnlockMsg.textContent = "Senha incorreta.";
     adminUnlockMsg.className = "admin-unlock-msg admin-unlock-error";
     adminUnlockBtn.disabled = false;
   }

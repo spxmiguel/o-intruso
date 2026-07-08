@@ -282,15 +282,6 @@ body {
   border-color: var(--oliva);
 }
 
-.admin-email-input {
-  width: 220px;
-  letter-spacing: 0.5px;
-  font-size: 0.95rem;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .admin-unlock-msg {
   font-size: 0.85rem;
   margin: 10px 0 0;
