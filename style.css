@@ -213,6 +213,88 @@ body {
   cursor: default;
 }
 
+.btn-secondary {
+  background-color: var(--papel);
+  color: var(--marrom-claro);
+  border: 3px dashed var(--marrom-claro);
+  box-shadow: none;
+  font-size: clamp(0.85rem, 2.2vw, 1.02rem);
+  padding: 12px 24px;
+  min-height: auto;
+  margin-top: 14px;
+}
+
+.btn-secondary:active {
+  transform: translateY(2px);
+}
+
+#blocked-screen .btn {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+}
+
+/* ---------- Caixa da equipe (desbloqueio) ---------- */
+
+.admin-box {
+  margin-top: 24px;
+  text-align: left;
+  border-top: 1px dashed var(--bege-escuro);
+  padding-top: 14px;
+}
+
+.admin-box summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--marrom-claro);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.admin-box-content {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.admin-box-label {
+  font-size: 0.8rem;
+  color: var(--marrom-claro);
+  margin: 0 0 8px;
+}
+
+.admin-pin-input {
+  font-family: var(--fonte-texto);
+  font-size: 1.1rem;
+  letter-spacing: 4px;
+  text-align: center;
+  padding: 10px;
+  width: 140px;
+  border: 2px solid var(--marrom-claro);
+  border-radius: 4px;
+  background-color: var(--papel);
+  color: var(--marrom);
+  margin: 0 0 10px;
+}
+
+.admin-pin-input:focus {
+  outline: none;
+  border-color: var(--oliva);
+}
+
+.admin-unlock-msg {
+  font-size: 0.85rem;
+  margin: 10px 0 0;
+}
+
+.admin-unlock-error {
+  color: var(--vermelho);
+}
+
+.admin-unlock-ok {
+  color: var(--oliva-escuro);
+}
+
 /* ---------- Tela do jogo ---------- */
 
 #game-screen {

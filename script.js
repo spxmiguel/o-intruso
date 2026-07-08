@@ -8,6 +8,7 @@
 
 const GAME_CONFIG = {
   maxErrosPorRodada: 1, // erros permitidos antes de a rodada ser considerada errada
+  adminPin: "1945", // PIN pra equipe desbloquear um aparelho na tela "já jogado"
   rounds: [
     {
       title: "Objetos do dia a dia",
@@ -220,7 +221,7 @@ async function computeFingerprint() {
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {
-  getFirestore, doc, getDoc, updateDoc, runTransaction, serverTimestamp
+  getFirestore, doc, getDoc, updateDoc, deleteDoc, runTransaction, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const app = initializeApp(FIREBASE_CONFIG);
@@ -238,6 +239,12 @@ const screens = {
 const loadingText = document.getElementById("loading-text");
 const playBtn = document.getElementById("play-btn");
 
+const showTicketBtn = document.getElementById("show-ticket-btn");
+const replayFreeBtn = document.getElementById("replay-free-btn");
+const adminPinInput = document.getElementById("admin-pin-input");
+const adminUnlockBtn = document.getElementById("admin-unlock-btn");
+const adminUnlockMsg = document.getElementById("admin-unlock-msg");
+
 const roundIndicator = document.getElementById("round-indicator");
 const roundTitle = document.getElementById("round-title");
 const gameHint = document.getElementById("game-hint");
@@ -253,9 +260,12 @@ const nextRoundBtn = document.getElementById("next-round-btn");
 
 const finalScoreEl = document.getElementById("final-score");
 const finalBreakdown = document.getElementById("final-breakdown");
+const finalNote = document.getElementById("final-note");
+const finalReplayBtn = document.getElementById("final-replay-btn");
 const ticketSerial = document.getElementById("ticket-serial");
 
 let deviceRef = null;
+let freePlay = false;
 let currentRound = 0;
 let score = 0;
 let roundResults = [];
@@ -298,15 +308,23 @@ async function init() {
   }
 
   if (snap.exists()) {
-    showScreen("blocked");
+    showBlockedScreen(snap.data());
     return;
   }
 
   showScreen("start");
 }
 
+function showBlockedScreen(data) {
+  showScreen("blocked");
+  showTicketBtn.classList.toggle("hidden", data.resultado !== "ganhou");
+  adminPinInput.value = "";
+  adminUnlockMsg.classList.add("hidden");
+}
+
 async function claimDeviceAndStart() {
   playBtn.disabled = true;
+  freePlay = false;
   try {
     await runTransaction(db, async (tx) => {
       const snap = await tx.get(deviceRef);
@@ -316,10 +334,24 @@ async function claimDeviceAndStart() {
       tx.set(deviceRef, { bloqueadoEm: serverTimestamp(), resultado: null });
     });
   } catch (e) {
-    showScreen("blocked");
+    await refreshBlockedScreen();
     return;
   }
   playBtn.disabled = false;
+  startGame();
+}
+
+async function refreshBlockedScreen() {
+  try {
+    const snap = await getDoc(deviceRef);
+    showBlockedScreen(snap.exists() ? snap.data() : { resultado: null });
+  } catch (e) {
+    showScreen("blocked");
+  }
+}
+
+function startFreePlay() {
+  freePlay = true;
   startGame();
 }
 
@@ -445,8 +477,14 @@ function goToNextRound() {
 
 async function finishGame() {
   const perfeito = score === GAME_CONFIG.rounds.length;
-  const resultado = perfeito ? "ganhou" : "perdeu";
 
+  if (freePlay) {
+    // Modo sem prêmio: nunca grava nada e nunca mostra o ticket de verdade.
+    showFinalScreen(perfeito);
+    return;
+  }
+
+  const resultado = perfeito ? "ganhou" : "perdeu";
   try {
     await updateDoc(deviceRef, { resultado, finalizadoEm: serverTimestamp() });
   } catch (e) {
@@ -456,11 +494,11 @@ async function finishGame() {
   if (perfeito) {
     showTicketScreen();
   } else {
-    showFinalScreen();
+    showFinalScreen(false);
   }
 }
 
-function showFinalScreen() {
+function showFinalScreen(perfeitoEmModoLivre) {
   showScreen("final");
   finalScoreEl.textContent = `${score} de ${GAME_CONFIG.rounds.length} rodadas certas`;
   finalBreakdown.innerHTML = roundResults.map((r, i) => `
@@ -468,6 +506,15 @@ function showFinalScreen() {
       Rodada ${i + 1} — ${r.title}: ${r.acertou ? "acertou" : "errou"}
     </li>
   `).join("");
+
+  if (freePlay && perfeitoEmModoLivre) {
+    finalNote.textContent = "🚫 Modo sem prêmio: mesmo acertando tudo, essa jogada não vale bala.";
+  } else if (freePlay) {
+    finalNote.textContent = "Modo sem prêmio — foi só treino, não conta pra bala.";
+  } else {
+    finalNote.textContent = "Pra ganhar o ticket, era preciso acertar as 3 rodadas. Obrigado por jogar!";
+  }
+  finalReplayBtn.classList.toggle("hidden", !freePlay);
 }
 
 function showTicketScreen() {
@@ -476,7 +523,31 @@ function showTicketScreen() {
   ticketSerial.textContent = serial;
 }
 
+async function handleAdminUnlock() {
+  adminUnlockMsg.classList.remove("hidden");
+  if (adminPinInput.value !== GAME_CONFIG.adminPin) {
+    adminUnlockMsg.textContent = "PIN incorreto.";
+    adminUnlockMsg.className = "admin-unlock-msg admin-unlock-error";
+    return;
+  }
+  adminUnlockBtn.disabled = true;
+  try {
+    await deleteDoc(deviceRef);
+    adminUnlockMsg.textContent = "Desbloqueado! Recarregando...";
+    adminUnlockMsg.className = "admin-unlock-msg admin-unlock-ok";
+    setTimeout(() => window.location.reload(), 800);
+  } catch (e) {
+    adminUnlockMsg.textContent = "Não consegui desbloquear. Tenta de novo.";
+    adminUnlockMsg.className = "admin-unlock-msg admin-unlock-error";
+    adminUnlockBtn.disabled = false;
+  }
+}
+
 playBtn.addEventListener("click", claimDeviceAndStart);
 nextRoundBtn.addEventListener("click", goToNextRound);
+showTicketBtn.addEventListener("click", showTicketScreen);
+replayFreeBtn.addEventListener("click", startFreePlay);
+finalReplayBtn.addEventListener("click", startFreePlay);
+adminUnlockBtn.addEventListener("click", handleAdminUnlock);
 
 init();

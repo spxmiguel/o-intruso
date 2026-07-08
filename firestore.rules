@@ -19,7 +19,11 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resultado', 'finalizadoEm'])
         && request.resource.data.resultado in ['ganhou', 'perdeu'];
 
-      allow delete: if false;
+      // Sem sistema de login pra equipe, então o "desbloqueio" pela equipe é
+      // liberado aqui e protegido só por um PIN no app (não é segurança de
+      // verdade — é só uma trava social pra não ser óbvio pra qualquer
+      // visitante). Adequado pro risco real aqui (uma bala).
+      allow delete: if true;
     }
 
     match /{document=**} {

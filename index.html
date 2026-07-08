@@ -21,8 +21,20 @@
     <div class="paper-frame">
       <p class="stamp-badge stamp-badge-red">JÁ JOGADO</p>
       <h1 class="title title-sm">Esse aparelho já jogou</h1>
-      <p class="subtitle">Cada aparelho participa uma única vez.</p>
-      <p class="instructions">Se você já jogou e ganhou, mostra a tela do seu ticket pra equipe.</p>
+      <p class="subtitle">Cada aparelho participa uma única vez valendo prêmio.</p>
+
+      <button id="show-ticket-btn" class="btn btn-primary hidden" type="button">MOSTRAR MEU TICKET</button>
+      <button id="replay-free-btn" class="btn btn-secondary" type="button">JOGAR DE NOVO (sem prêmio)</button>
+
+      <details class="admin-box">
+        <summary>Equipe</summary>
+        <div class="admin-box-content">
+          <p class="admin-box-label">PIN da equipe pra liberar este aparelho de novo:</p>
+          <input id="admin-pin-input" class="admin-pin-input" type="password" inputmode="numeric" placeholder="PIN">
+          <button id="admin-unlock-btn" class="btn btn-secondary" type="button">DESBLOQUEAR ESTE APARELHO</button>
+          <p id="admin-unlock-msg" class="admin-unlock-msg hidden"></p>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -72,7 +84,8 @@
       <h1 class="title title-sm">Resultado final</h1>
       <p class="final-score" id="final-score">0 de 3 rodadas certas</p>
       <ul id="final-breakdown" class="final-breakdown"></ul>
-      <p class="instructions">Pra ganhar o ticket, era preciso acertar as 3 rodadas. Obrigado por jogar!</p>
+      <p id="final-note" class="instructions">Pra ganhar o ticket, era preciso acertar as 3 rodadas. Obrigado por jogar!</p>
+      <button id="final-replay-btn" class="btn btn-secondary hidden" type="button">JOGAR DE NOVO (sem prêmio)</button>
     </div>
   </section>
 
