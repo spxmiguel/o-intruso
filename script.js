@@ -8,7 +8,6 @@
 
 const GAME_CONFIG = {
   maxErrosPorRodada: 1, // erros permitidos antes de a rodada ser considerada errada
-  adminPin: "tuts", // PIN pra equipe desbloquear um aparelho na tela "já jogado"
   rounds: [
     {
       title: "Objetos do dia a dia",
@@ -223,9 +222,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/fireba
 import {
   getFirestore, doc, getDoc, updateDoc, deleteDoc, runTransaction, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {
+  getAuth, signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
 const app = initializeApp(FIREBASE_CONFIG);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 const screens = {
   loading: document.getElementById("loading-screen"),
@@ -241,6 +244,7 @@ const playBtn = document.getElementById("play-btn");
 
 const showTicketBtn = document.getElementById("show-ticket-btn");
 const replayFreeBtn = document.getElementById("replay-free-btn");
+const adminEmailInput = document.getElementById("admin-email-input");
 const adminPinInput = document.getElementById("admin-pin-input");
 const adminUnlockBtn = document.getElementById("admin-unlock-btn");
 const adminUnlockMsg = document.getElementById("admin-unlock-msg");
@@ -318,6 +322,7 @@ async function init() {
 function showBlockedScreen(data) {
   showScreen("blocked");
   showTicketBtn.classList.toggle("hidden", data.resultado !== "ganhou");
+  adminEmailInput.value = "";
   adminPinInput.value = "";
   adminUnlockMsg.classList.add("hidden");
 }
@@ -525,19 +530,26 @@ function showTicketScreen() {
 
 async function handleAdminUnlock() {
   adminUnlockMsg.classList.remove("hidden");
-  if (adminPinInput.value.trim().toLowerCase() !== GAME_CONFIG.adminPin.toLowerCase()) {
-    adminUnlockMsg.textContent = "PIN incorreto.";
+  const email = adminEmailInput.value.trim();
+  const password = adminPinInput.value;
+
+  if (!email || !password) {
+    adminUnlockMsg.textContent = "Preenche e-mail e senha.";
     adminUnlockMsg.className = "admin-unlock-msg admin-unlock-error";
     return;
   }
+
   adminUnlockBtn.disabled = true;
   try {
+    // A senha nunca fica no código-fonte: ela é conferida pelo próprio
+    // servidor de autenticação do Firebase, não pelo navegador.
+    await signInWithEmailAndPassword(auth, email, password);
     await deleteDoc(deviceRef);
     adminUnlockMsg.textContent = "Desbloqueado! Recarregando...";
     adminUnlockMsg.className = "admin-unlock-msg admin-unlock-ok";
     setTimeout(() => window.location.reload(), 800);
   } catch (e) {
-    adminUnlockMsg.textContent = "Não consegui desbloquear. Tenta de novo.";
+    adminUnlockMsg.textContent = "E-mail ou senha incorretos.";
     adminUnlockMsg.className = "admin-unlock-msg admin-unlock-error";
     adminUnlockBtn.disabled = false;
   }
