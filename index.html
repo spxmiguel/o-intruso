@@ -8,13 +8,32 @@
 </head>
 <body>
 
+  <!-- TELA DE CARREGAMENTO -->
+  <section id="loading-screen" class="screen">
+    <div class="paper-frame loading-frame">
+      <h1 class="title title-sm">O INTRUSO</h1>
+      <p class="loading-text" id="loading-text">Verificando&hellip;</p>
+    </div>
+  </section>
+
+  <!-- TELA DE APARELHO BLOQUEADO (já jogou) -->
+  <section id="blocked-screen" class="screen hidden">
+    <div class="paper-frame">
+      <p class="stamp-badge stamp-badge-red">JÁ JOGADO</p>
+      <h1 class="title title-sm">Esse aparelho já jogou</h1>
+      <p class="subtitle">Cada aparelho participa uma única vez.</p>
+      <p class="instructions">Se você já jogou e ganhou, mostra a tela do seu ticket pra equipe.</p>
+    </div>
+  </section>
+
   <!-- TELA INICIAL -->
-  <section id="start-screen" class="screen">
+  <section id="start-screen" class="screen hidden">
     <div class="paper-frame start-frame">
-      <p class="stamp">FEIRA DE CIÊNCIAS &middot; 1939&ndash;1945</p>
+      <p class="date-mark">1939&ndash;1945</p>
       <h1 class="title">O INTRUSO</h1>
       <p class="subtitle">3 rodadas. 6 objetos por rodada.<br>Em cada uma, cinco têm origem na Segunda Guerra Mundial — um não.</p>
       <p class="instructions">Cuidado: alguns intrusos parecem antigos, e alguns itens de guerra parecem modernos.</p>
+      <p class="warning-once">Você só joga uma vez neste aparelho — capricha!</p>
       <button id="play-btn" class="btn btn-primary" type="button">JOGAR</button>
     </div>
   </section>
@@ -35,7 +54,7 @@
   <!-- OVERLAY DE RESULTADO DA RODADA -->
   <div id="round-overlay" class="overlay hidden">
     <div class="paper-frame win-frame">
-      <p id="round-stamp" class="stamp stamp-gold">ACERTOU!</p>
+      <p id="round-stamp" class="stamp-badge stamp-badge-gold">ACERTOU</p>
       <h2 id="round-result-title" class="win-title"></h2>
       <p id="round-result-explanation" class="win-explanation"></p>
 
@@ -46,14 +65,31 @@
     </div>
   </div>
 
-  <!-- TELA DE RESULTADO FINAL -->
+  <!-- TELA DE RESULTADO FINAL (sem prêmio) -->
   <section id="final-screen" class="screen hidden">
     <div class="paper-frame final-frame">
-      <p class="stamp stamp-gold">FIM DE JOGO</p>
+      <p class="stamp-badge stamp-badge-red">FIM DE JOGO</p>
       <h1 class="title title-sm">Resultado final</h1>
       <p class="final-score" id="final-score">0 de 3 rodadas certas</p>
       <ul id="final-breakdown" class="final-breakdown"></ul>
-      <button id="play-again-btn" class="btn btn-primary" type="button">JOGAR DE NOVO</button>
+      <p class="instructions">Pra ganhar o ticket, era preciso acertar as 3 rodadas. Obrigado por jogar!</p>
+    </div>
+  </section>
+
+  <!-- TICKET DE RACIONAMENTO (prêmio, só com 3/3) -->
+  <section id="ticket-screen" class="screen hidden">
+    <div class="ration-ticket">
+      <div class="ration-ticket-inner">
+        <p class="ration-header">CARTÃO DE RACIONAMENTO</p>
+        <p class="ration-subheader">Ministério do Abastecimento &middot; 1939&ndash;1945</p>
+        <div class="ration-divider"></div>
+        <p class="ration-vale">VALE</p>
+        <p class="ration-item">1 (UMA) BALA</p>
+        <div class="ration-divider"></div>
+        <p class="ration-serial">Nº DE SÉRIE <span id="ticket-serial">000000</span></p>
+        <p class="ration-fineprint">Válido apenas para o portador desta tela. Não transferível. Um ticket por pessoa.</p>
+        <p class="ration-instruction">Mostre esta tela pra equipe pra resgatar</p>
+      </div>
     </div>
   </section>
 

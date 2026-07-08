@@ -1,0 +1,29 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Cada aparelho gera uma "impressão digital" (hash de características de
+    // hardware/navegador que não mudam ao limpar cache/cookies). O documento
+    // é identificado por esse hash. Existir = já jogou nesse aparelho.
+    match /device_plays/{fingerprintId} {
+      allow get: if true;
+      allow list: if false;
+
+      // Primeira jogada: só cria o registro, nunca sobrescreve um existente.
+      allow create: if request.resource.data.keys().hasOnly(['bloqueadoEm', 'resultado'])
+        && request.resource.data.resultado == null;
+
+      // Grava o resultado uma única vez, depois de criado.
+      allow update: if resource.data.resultado == null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resultado', 'finalizadoEm'])
+        && request.resource.data.resultado in ['ganhou', 'perdeu'];
+
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

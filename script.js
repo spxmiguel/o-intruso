@@ -153,14 +153,90 @@ const GAME_CONFIG = {
   ]
 };
 
+const FIREBASE_CONFIG = {
+  projectId: "o-intruso-feira",
+  appId: "1:484196629049:web:49ee632e5d2c2dcd0aabe8",
+  storageBucket: "o-intruso-feira.firebasestorage.app",
+  apiKey: "AIzaSyC7Pn6NgJDVMUaK6Rk3oQp33aceHZGb8gU",
+  authDomain: "o-intruso-feira.firebaseapp.com",
+  messagingSenderId: "484196629049"
+};
+
+/* =========================================================
+   Anti-replay por impressão digital do aparelho.
+   Não usa localStorage/cookies (dá pra limpar); em vez disso,
+   deriva um hash de características de hardware/navegador que
+   não mudam ao limpar cache, e confere no Firestore se esse
+   aparelho já jogou. Bloqueio é feito no servidor, não no
+   navegador do jogador.
+   ========================================================= */
+
+async function computeFingerprint() {
+  const parts = [];
+
+  parts.push(navigator.userAgent || "");
+  parts.push(navigator.platform || "");
+  parts.push(String(navigator.hardwareConcurrency || ""));
+  parts.push(String(navigator.deviceMemory || ""));
+  parts.push(navigator.language || "");
+  parts.push(String(navigator.maxTouchPoints || ""));
+  parts.push(`${screen.width}x${screen.height}x${screen.colorDepth}`);
+  try {
+    parts.push(Intl.DateTimeFormat().resolvedOptions().timeZone || "");
+  } catch (e) { /* ignora */ }
+
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = 220;
+    canvas.height = 40;
+    const ctx = canvas.getContext("2d");
+    ctx.textBaseline = "top";
+    ctx.font = "16px 'Courier New'";
+    ctx.fillStyle = "#5c6b3d";
+    ctx.fillText("O Intruso — 1939-1945", 2, 2);
+    ctx.strokeStyle = "#8b3a2f";
+    ctx.strokeRect(0, 0, 219, 39);
+    parts.push(canvas.toDataURL());
+  } catch (e) { /* ignora */ }
+
+  try {
+    const gl = document.createElement("canvas").getContext("webgl");
+    const dbg = gl && gl.getExtension("WEBGL_debug_renderer_info");
+    if (gl && dbg) {
+      parts.push(gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) || "");
+      parts.push(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || "");
+    }
+  } catch (e) { /* ignora */ }
+
+  const raw = parts.join("||");
+  const encoder = new TextEncoder();
+  const data = encoder.encode(raw);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 /* ========================================================= */
 
-const startScreen = document.getElementById("start-screen");
-const gameScreen = document.getElementById("game-screen");
-const finalScreen = document.getElementById("final-screen");
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, updateDoc, runTransaction, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
+const app = initializeApp(FIREBASE_CONFIG);
+const db = getFirestore(app);
+
+const screens = {
+  loading: document.getElementById("loading-screen"),
+  blocked: document.getElementById("blocked-screen"),
+  start: document.getElementById("start-screen"),
+  game: document.getElementById("game-screen"),
+  final: document.getElementById("final-screen"),
+  ticket: document.getElementById("ticket-screen")
+};
+
+const loadingText = document.getElementById("loading-text");
 const playBtn = document.getElementById("play-btn");
-const playAgainBtn = document.getElementById("play-again-btn");
 
 const roundIndicator = document.getElementById("round-indicator");
 const roundTitle = document.getElementById("round-title");
@@ -177,7 +253,9 @@ const nextRoundBtn = document.getElementById("next-round-btn");
 
 const finalScoreEl = document.getElementById("final-score");
 const finalBreakdown = document.getElementById("final-breakdown");
+const ticketSerial = document.getElementById("ticket-serial");
 
+let deviceRef = null;
 let currentRound = 0;
 let score = 0;
 let roundResults = [];
@@ -185,9 +263,9 @@ let solved = false;
 let wrongCount = 0;
 const wrongIds = new Set();
 
-function showScreen(el) {
-  [startScreen, gameScreen, finalScreen].forEach((s) => s.classList.add("hidden"));
-  el.classList.remove("hidden");
+function showScreen(name) {
+  Object.values(screens).forEach((el) => el.classList.add("hidden"));
+  screens[name].classList.remove("hidden");
 }
 
 function shuffle(array) {
@@ -199,11 +277,57 @@ function shuffle(array) {
   return copy;
 }
 
+async function init() {
+  showScreen("loading");
+  let fingerprint;
+  try {
+    fingerprint = await computeFingerprint();
+  } catch (e) {
+    loadingText.textContent = "Não conseguimos verificar o aparelho. Recarregue a página.";
+    return;
+  }
+
+  deviceRef = doc(db, "device_plays", fingerprint);
+
+  let snap;
+  try {
+    snap = await getDoc(deviceRef);
+  } catch (e) {
+    loadingText.textContent = "Sem conexão. Verifique a internet e recarregue a página.";
+    return;
+  }
+
+  if (snap.exists()) {
+    showScreen("blocked");
+    return;
+  }
+
+  showScreen("start");
+}
+
+async function claimDeviceAndStart() {
+  playBtn.disabled = true;
+  try {
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(deviceRef);
+      if (snap.exists()) {
+        throw new Error("ALREADY_PLAYED");
+      }
+      tx.set(deviceRef, { bloqueadoEm: serverTimestamp(), resultado: null });
+    });
+  } catch (e) {
+    showScreen("blocked");
+    return;
+  }
+  playBtn.disabled = false;
+  startGame();
+}
+
 function startGame() {
   currentRound = 0;
   score = 0;
   roundResults = [];
-  showScreen(gameScreen);
+  showScreen("game");
   startRound();
 }
 
@@ -296,8 +420,8 @@ function buildOtherItemsList(round) {
 
 function showRoundOverlay(intruderItem, acertou) {
   const round = GAME_CONFIG.rounds[currentRound];
-  roundStamp.textContent = acertou ? "ACERTOU!" : "ERA ESSE!";
-  roundStamp.className = acertou ? "stamp stamp-gold" : "stamp stamp-red";
+  roundStamp.textContent = acertou ? "ACERTOU" : "ERA ESSE";
+  roundStamp.className = acertou ? "stamp-badge stamp-badge-gold" : "stamp-badge stamp-badge-red";
   roundResultTitle.textContent = `${intruderItem.name} é o Intruso!`;
   roundResultExplanation.textContent = intruderItem.origin;
   buildOtherItemsList(round);
@@ -312,15 +436,32 @@ function goToNextRound() {
   roundOverlay.classList.add("hidden");
   const isLastRound = currentRound === GAME_CONFIG.rounds.length - 1;
   if (isLastRound) {
-    showFinalScreen();
+    finishGame();
   } else {
     currentRound += 1;
     startRound();
   }
 }
 
+async function finishGame() {
+  const perfeito = score === GAME_CONFIG.rounds.length;
+  const resultado = perfeito ? "ganhou" : "perdeu";
+
+  try {
+    await updateDoc(deviceRef, { resultado, finalizadoEm: serverTimestamp() });
+  } catch (e) {
+    console.error("Falha ao salvar resultado:", e);
+  }
+
+  if (perfeito) {
+    showTicketScreen();
+  } else {
+    showFinalScreen();
+  }
+}
+
 function showFinalScreen() {
-  showScreen(finalScreen);
+  showScreen("final");
   finalScoreEl.textContent = `${score} de ${GAME_CONFIG.rounds.length} rodadas certas`;
   finalBreakdown.innerHTML = roundResults.map((r, i) => `
     <li class="${r.acertou ? "breakdown-ok" : "breakdown-fail"}">
@@ -329,6 +470,13 @@ function showFinalScreen() {
   `).join("");
 }
 
-playBtn.addEventListener("click", startGame);
+function showTicketScreen() {
+  showScreen("ticket");
+  const serial = deviceRef.id.slice(0, 8).toUpperCase();
+  ticketSerial.textContent = serial;
+}
+
+playBtn.addEventListener("click", claimDeviceAndStart);
 nextRoundBtn.addEventListener("click", goToNextRound);
-playAgainBtn.addEventListener("click", startGame);
+
+init();

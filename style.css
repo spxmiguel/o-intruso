@@ -5,17 +5,18 @@
    ========================================================= */
 
 :root {
-  --bege:          #ecdfc0;
-  --bege-escuro:   #d9c79c;
-  --papel:         #f4ead2;
+  --bege:          #e4d5ab;
+  --bege-escuro:   #cbb27e;
+  --papel:         #f1e4c3;
+  --papel-escuro:  #e8d6a8;
   --oliva:         #5c6b3d;
   --oliva-escuro:  #3e4a28;
-  --dourado:       #b8912f;
+  --dourado:       #a97e1f;
   --dourado-claro: #d9ab3d;
   --marrom:        #3a2e1e;
   --marrom-claro:  #6b5a3f;
   --vermelho:      #8b3a2f;
-  --sombra:        rgba(58, 46, 30, 0.35);
+  --sombra:        rgba(58, 46, 30, 0.4);
 
   --fonte-titulo: 'Courier New', Courier, monospace;
   --fonte-texto:  'Courier New', Courier, monospace;
@@ -37,9 +38,11 @@ body {
   color: var(--marrom);
   background-color: var(--bege);
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(184, 145, 47, 0.08) 0%, transparent 45%),
-    radial-gradient(circle at 80% 70%, rgba(92, 107, 61, 0.10) 0%, transparent 50%),
-    repeating-linear-gradient(0deg, rgba(58,46,30,0.025) 0px, rgba(58,46,30,0.025) 1px, transparent 1px, transparent 3px);
+    radial-gradient(circle at 15% 15%, rgba(169, 126, 31, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(92, 107, 61, 0.16) 0%, transparent 50%),
+    radial-gradient(circle at 50% 100%, rgba(58, 46, 30, 0.12) 0%, transparent 60%),
+    repeating-linear-gradient(0deg, rgba(58,46,30,0.03) 0px, rgba(58,46,30,0.03) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(90deg, rgba(58,46,30,0.015) 0px, rgba(58,46,30,0.015) 1px, transparent 1px, transparent 4px);
   min-height: 100vh;
   overflow-x: hidden;
   touch-action: manipulation;
@@ -64,11 +67,13 @@ body {
 
 .paper-frame {
   background-color: var(--papel);
+  background-image: radial-gradient(circle at 30% 20%, rgba(169,126,31,0.08) 0%, transparent 50%);
   border: 3px solid var(--marrom);
-  border-radius: 6px;
+  border-radius: 3px;
   box-shadow:
-    0 0 0 6px var(--bege-escuro),
+    0 0 0 6px var(--papel-escuro),
     0 0 0 8px var(--marrom-claro),
+    10px 12px 0 rgba(58, 46, 30, 0.12),
     8px 10px 24px var(--sombra);
   padding: 36px 32px;
   max-width: 640px;
@@ -87,30 +92,70 @@ body {
   opacity: 0.6;
 }
 
-.stamp {
+/* ---------- Carimbo vintage (usado em resultado de rodada, etc) ---------- */
+
+.stamp-badge {
+  position: relative;
   display: inline-block;
-  font-size: 0.75rem;
-  letter-spacing: 3px;
-  color: var(--vermelho);
-  border: 2px solid var(--vermelho);
-  border-radius: 4px;
-  padding: 4px 10px;
-  transform: rotate(-3deg);
-  margin: 0 0 18px;
+  font-family: var(--fonte-titulo);
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 5px;
   text-transform: uppercase;
+  padding: 9px 22px;
+  margin: 0 0 20px;
+  border: 3px double currentColor;
+  border-radius: 3px;
+  transform: rotate(-4deg);
+  background: radial-gradient(circle, rgba(139,58,47,0.05) 0%, transparent 75%);
+}
+
+.stamp-badge::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  opacity: 0.35;
+  transform: rotate(2deg);
+}
+
+.stamp-badge-gold {
+  color: var(--oliva-escuro);
+  box-shadow: 0 0 0 1px rgba(169, 126, 31, 0.15);
+}
+
+.stamp-badge-red {
+  color: var(--vermelho);
+  box-shadow: 0 0 0 1px rgba(139, 58, 47, 0.15);
+}
+
+.date-mark {
+  font-size: 0.85rem;
+  letter-spacing: 4px;
+  color: var(--marrom-claro);
+  margin: 0 0 14px;
   font-weight: bold;
 }
 
-.stamp-gold {
-  color: var(--oliva-escuro);
-  border-color: var(--dourado);
-  background: rgba(184, 145, 47, 0.15);
+/* ---------- Tela de carregamento / bloqueado ---------- */
+
+.title-sm {
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
 }
 
-.stamp-red {
+.loading-text {
+  font-size: clamp(1rem, 2.6vw, 1.2rem);
+  color: var(--marrom-claro);
+  margin: 18px 0 0;
+}
+
+.warning-once {
+  font-size: 0.85rem;
   color: var(--vermelho);
-  border-color: var(--vermelho);
-  background: rgba(139, 58, 47, 0.1);
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin: -10px 0 26px;
 }
 
 /* ---------- Tela inicial ---------- */
@@ -122,10 +167,6 @@ body {
   color: var(--oliva-escuro);
   text-shadow: 2px 2px 0 var(--dourado-claro);
   font-weight: bold;
-}
-
-.title-sm {
-  font-size: clamp(1.8rem, 6vw, 2.6rem);
 }
 
 .subtitle {
@@ -148,7 +189,7 @@ body {
   font-weight: bold;
   letter-spacing: 3px;
   padding: 18px 42px;
-  border-radius: 6px;
+  border-radius: 4px;
   border: 3px solid var(--oliva-escuro);
   cursor: pointer;
   min-height: 60px;
@@ -165,6 +206,11 @@ body {
 .btn-primary:active {
   transform: translateY(4px);
   box-shadow: 0 1px 0 var(--oliva-escuro), 0 2px 6px var(--sombra);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 /* ---------- Tela do jogo ---------- */
@@ -188,7 +234,7 @@ body {
   letter-spacing: 2px;
   font-weight: bold;
   padding: 5px 14px;
-  border-radius: 20px;
+  border-radius: 3px;
   margin: 0 0 10px;
   text-transform: uppercase;
 }
@@ -225,8 +271,8 @@ body {
   font-family: var(--fonte-texto);
   background-color: var(--papel);
   border: 3px solid var(--marrom);
-  border-radius: 10px;
-  box-shadow: 0 0 0 4px var(--bege-escuro), 4px 6px 14px var(--sombra);
+  border-radius: 4px;
+  box-shadow: 0 0 0 4px var(--papel-escuro), 4px 6px 14px var(--sombra);
   padding: 14px 12px;
   min-height: 190px;
   display: flex;
@@ -253,10 +299,11 @@ body {
 .card-image-wrap {
   width: 100%;
   aspect-ratio: 4 / 3;
-  border-radius: 6px;
+  border-radius: 2px;
   overflow: hidden;
-  border: 2px solid var(--bege-escuro);
+  border: 2px solid var(--papel-escuro);
   background-color: var(--bege);
+  filter: sepia(0.35) contrast(1.02);
 }
 
 .card-image {
@@ -274,7 +321,7 @@ body {
 }
 
 .card.wrong {
-  background-color: #e4d5b0;
+  background-color: #ddc794;
   border-color: var(--vermelho);
   opacity: 0.55;
   filter: grayscale(0.6);
@@ -317,7 +364,7 @@ body {
   background-color: var(--vermelho);
   color: var(--papel);
   border: 3px solid var(--marrom);
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 0 20px;
   max-height: 0;
   overflow: hidden;
@@ -338,7 +385,7 @@ body {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(58, 46, 30, 0.72);
+  background: rgba(58, 46, 30, 0.78);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -386,9 +433,9 @@ body {
 }
 
 .win-list li {
-  background-color: var(--bege);
+  background-color: var(--papel-escuro);
   border: 2px solid var(--bege-escuro);
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 10px 14px;
   font-size: clamp(0.85rem, 2.1vw, 0.98rem);
   line-height: 1.45;
@@ -400,7 +447,7 @@ body {
   margin-bottom: 3px;
 }
 
-/* ---------- Tela de resultado final ---------- */
+/* ---------- Tela de resultado final (sem prêmio) ---------- */
 
 .final-frame {
   max-width: 560px;
@@ -424,7 +471,7 @@ body {
 }
 
 .final-breakdown li {
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 10px 14px;
   font-size: clamp(0.9rem, 2.2vw, 1.02rem);
   border: 2px solid var(--bege-escuro);
@@ -438,4 +485,102 @@ body {
 .breakdown-fail {
   background-color: rgba(139, 58, 47, 0.1);
   border-color: var(--vermelho) !important;
+}
+
+/* ---------- Ticket de racionamento (prêmio) ---------- */
+
+.ration-ticket {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--papel);
+  border: 3px solid var(--marrom);
+  padding: 6px;
+  box-shadow: 10px 12px 0 rgba(58, 46, 30, 0.15), 8px 10px 24px var(--sombra);
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0, transparent 8px, rgba(58,46,30,0.02) 8px, rgba(58,46,30,0.02) 9px);
+}
+
+.ration-ticket-inner {
+  border: 2px dashed var(--marrom-claro);
+  padding: 28px 22px;
+  text-align: center;
+  position: relative;
+}
+
+.ration-ticket-inner::before,
+.ration-ticket-inner::after {
+  content: "★";
+  position: absolute;
+  top: 10px;
+  color: var(--dourado);
+  font-size: 1.1rem;
+}
+
+.ration-ticket-inner::before { left: 14px; }
+.ration-ticket-inner::after { right: 14px; }
+
+.ration-header {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: var(--marrom);
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.ration-subheader {
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  color: var(--marrom-claro);
+  margin: 0 0 16px;
+  text-transform: uppercase;
+}
+
+.ration-divider {
+  border-top: 1px dashed var(--marrom-claro);
+  margin: 16px 0;
+}
+
+.ration-vale {
+  font-size: 0.9rem;
+  letter-spacing: 6px;
+  color: var(--vermelho);
+  font-weight: bold;
+  margin: 0 0 6px;
+}
+
+.ration-item {
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: var(--oliva-escuro);
+  margin: 0;
+  text-shadow: 1px 1px 0 var(--dourado-claro);
+}
+
+.ration-serial {
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--marrom);
+  margin: 0;
+}
+
+.ration-serial span {
+  font-weight: bold;
+  color: var(--vermelho);
+}
+
+.ration-fineprint {
+  font-size: 0.68rem;
+  color: var(--marrom-claro);
+  line-height: 1.4;
+  margin: 14px 0 0;
+}
+
+.ration-instruction {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--oliva-escuro);
+  margin: 18px 0 0;
+  letter-spacing: 0.5px;
 }
