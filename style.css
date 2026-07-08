@@ -1,0 +1,375 @@
+/* =========================================================
+   O INTRUSO — tema vintage anos 1940
+   Sem fontes/ícones externos: tudo em CSS + fontes de sistema.
+   ========================================================= */
+
+:root {
+  --bege:          #ecdfc0;
+  --bege-escuro:   #d9c79c;
+  --papel:         #f4ead2;
+  --oliva:         #5c6b3d;
+  --oliva-escuro:  #3e4a28;
+  --dourado:       #b8912f;
+  --dourado-claro: #d9ab3d;
+  --marrom:        #3a2e1e;
+  --marrom-claro:  #6b5a3f;
+  --vermelho:      #8b3a2f;
+  --sombra:        rgba(58, 46, 30, 0.35);
+
+  --fonte-titulo: 'Courier New', Courier, monospace;
+  --fonte-texto:  'Courier New', Courier, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--fonte-texto);
+  color: var(--marrom);
+  background-color: var(--bege);
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(184, 145, 47, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(92, 107, 61, 0.10) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, rgba(58,46,30,0.025) 0px, rgba(58,46,30,0.025) 1px, transparent 1px, transparent 3px);
+  min-height: 100vh;
+  overflow-x: hidden;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.screen {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* ---------- Moldura estilo papel antigo ---------- */
+
+.paper-frame {
+  background-color: var(--papel);
+  border: 3px solid var(--marrom);
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 6px var(--bege-escuro),
+    0 0 0 8px var(--marrom-claro),
+    8px 10px 24px var(--sombra);
+  padding: 36px 32px;
+  max-width: 640px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.paper-frame::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px dashed var(--dourado);
+  border-radius: 2px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.stamp {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: var(--vermelho);
+  border: 2px solid var(--vermelho);
+  border-radius: 4px;
+  padding: 4px 10px;
+  transform: rotate(-3deg);
+  margin: 0 0 18px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.stamp-gold {
+  color: var(--oliva-escuro);
+  border-color: var(--dourado);
+  background: rgba(184, 145, 47, 0.15);
+}
+
+/* ---------- Tela inicial ---------- */
+
+.title {
+  font-size: clamp(2.4rem, 8vw, 4rem);
+  letter-spacing: 6px;
+  margin: 0 0 18px;
+  color: var(--oliva-escuro);
+  text-shadow: 2px 2px 0 var(--dourado-claro);
+  font-weight: bold;
+}
+
+.subtitle {
+  font-size: clamp(1rem, 2.6vw, 1.25rem);
+  color: var(--marrom-claro);
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.instructions {
+  font-size: clamp(0.95rem, 2.4vw, 1.1rem);
+  margin: 0 0 30px;
+  color: var(--marrom);
+  line-height: 1.5;
+}
+
+.btn {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: bold;
+  letter-spacing: 3px;
+  padding: 18px 42px;
+  border-radius: 6px;
+  border: 3px solid var(--oliva-escuro);
+  cursor: pointer;
+  min-height: 60px;
+  touch-action: manipulation;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn-primary {
+  background-color: var(--oliva);
+  color: var(--papel);
+  box-shadow: 0 5px 0 var(--oliva-escuro), 0 8px 14px var(--sombra);
+}
+
+.btn-primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--oliva-escuro), 0 2px 6px var(--sombra);
+}
+
+/* ---------- Tela do jogo ---------- */
+
+#game-screen {
+  flex-direction: column;
+  padding: 20px 16px 40px;
+  align-items: stretch;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.game-title {
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  letter-spacing: 3px;
+  color: var(--oliva-escuro);
+  margin: 0 0 6px;
+}
+
+.game-hint {
+  color: var(--marrom-claro);
+  font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 700px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  font-family: var(--fonte-texto);
+  background-color: var(--papel);
+  border: 3px solid var(--marrom);
+  border-radius: 10px;
+  box-shadow: 0 0 0 4px var(--bege-escuro), 4px 6px 14px var(--sombra);
+  padding: 20px 12px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--marrom);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease, filter 0.2s ease;
+}
+
+@media (min-width: 700px) {
+  .card {
+    min-height: 190px;
+    padding: 26px 16px;
+  }
+}
+
+.card:active {
+  transform: scale(0.96);
+}
+
+.card-emoji {
+  font-size: clamp(2.6rem, 8vw, 4rem);
+  line-height: 1;
+}
+
+.card-name {
+  font-size: clamp(0.9rem, 2.4vw, 1.15rem);
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.card.wrong {
+  background-color: #e4d5b0;
+  border-color: var(--vermelho);
+  opacity: 0.55;
+  filter: grayscale(0.4);
+  cursor: default;
+  pointer-events: none;
+}
+
+.card.wrong::after {
+  content: "✕";
+  position: absolute;
+}
+
+.card.correct {
+  background-color: var(--oliva);
+  color: var(--papel);
+  border-color: var(--dourado);
+  animation: pop 0.5s ease;
+}
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.12) rotate(-2deg); }
+  60%  { transform: scale(0.97) rotate(1deg); }
+  100% { transform: scale(1); }
+}
+
+.card.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+/* ---------- Painel de feedback (erro) ---------- */
+
+.feedback-panel {
+  max-width: 900px;
+  width: 100%;
+  margin: 20px auto 0;
+  background-color: var(--vermelho);
+  color: var(--papel);
+  border: 3px solid var(--marrom);
+  border-radius: 8px;
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+  line-height: 1.5;
+  font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+}
+
+.feedback-panel.show {
+  max-height: 260px;
+  opacity: 1;
+  padding: 16px 20px;
+}
+
+/* ---------- Overlay de acerto ---------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(58, 46, 30, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+  overflow-y: auto;
+}
+
+.win-frame {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.win-title {
+  color: var(--oliva-escuro);
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  margin: 0 0 12px;
+  letter-spacing: 1px;
+}
+
+.win-explanation {
+  font-size: clamp(0.95rem, 2.3vw, 1.1rem);
+  line-height: 1.55;
+  margin: 0 0 24px;
+  color: var(--marrom);
+}
+
+.win-subheading {
+  color: var(--oliva-escuro);
+  font-size: clamp(1rem, 2.6vw, 1.2rem);
+  letter-spacing: 1px;
+  border-top: 1px dashed var(--dourado);
+  padding-top: 16px;
+  margin: 0 0 12px;
+}
+
+.win-list {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.win-list li {
+  background-color: var(--bege);
+  border: 2px solid var(--bege-escuro);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: clamp(0.85rem, 2.1vw, 0.98rem);
+  line-height: 1.45;
+}
+
+.win-list li strong {
+  color: var(--oliva-escuro);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.win-list li .li-emoji {
+  margin-right: 6px;
+}

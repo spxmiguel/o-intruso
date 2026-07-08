@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>O Intruso</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TELA INICIAL -->
+  <section id="start-screen" class="screen">
+    <div class="paper-frame start-frame">
+      <p class="stamp">FEIRA DE CIÊNCIAS &middot; 1939&ndash;1945</p>
+      <h1 class="title">O INTRUSO</h1>
+      <p class="subtitle">Seis objetos. Cinco nasceram na guerra.<br>Um deles não tem nada a ver com isso.</p>
+      <p class="instructions">Toque no objeto que você acha que <strong>NÃO</strong> tem origem na Segunda Guerra Mundial.</p>
+      <button id="play-btn" class="btn btn-primary" type="button">▶ JOGAR</button>
+    </div>
+  </section>
+
+  <!-- TELA DO JOGO -->
+  <section id="game-screen" class="screen hidden">
+    <header class="game-header">
+      <h2 class="game-title">Qual é o Intruso?</h2>
+      <p class="game-hint">Toque no objeto que não tem origem na guerra</p>
+    </header>
+
+    <div id="grid" class="grid"></div>
+
+    <div id="feedback-panel" class="feedback-panel" aria-live="polite"></div>
+  </section>
+
+  <!-- OVERLAY DE ACERTO -->
+  <div id="win-overlay" class="overlay hidden">
+    <div class="paper-frame win-frame">
+      <p class="stamp stamp-gold">ACERTOU!</p>
+      <h2 id="win-title" class="win-title"></h2>
+      <p id="win-explanation" class="win-explanation"></p>
+
+      <h3 class="win-subheading">E os outros objetos?</h3>
+      <ul id="win-list" class="win-list"></ul>
+
+      <button id="play-again-btn" class="btn btn-primary" type="button">JOGAR NOVAMENTE</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
