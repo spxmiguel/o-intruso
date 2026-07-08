@@ -8,7 +8,7 @@
 
 const GAME_CONFIG = {
   maxErrosPorRodada: 1, // erros permitidos antes de a rodada ser considerada errada
-  adminPin: "1945", // PIN pra equipe desbloquear um aparelho na tela "já jogado"
+  adminPin: "tuts", // PIN pra equipe desbloquear um aparelho na tela "já jogado"
   rounds: [
     {
       title: "Objetos do dia a dia",
@@ -479,8 +479,9 @@ async function finishGame() {
   const perfeito = score === GAME_CONFIG.rounds.length;
 
   if (freePlay) {
-    // Modo sem prêmio: nunca grava nada e nunca mostra o ticket de verdade.
-    showFinalScreen(perfeito);
+    // Modo sem prêmio: nunca grava nada e nunca mostra o ticket de verdade,
+    // mesmo acertando tudo.
+    showFinalScreen();
     return;
   }
 
@@ -494,11 +495,11 @@ async function finishGame() {
   if (perfeito) {
     showTicketScreen();
   } else {
-    showFinalScreen(false);
+    showFinalScreen();
   }
 }
 
-function showFinalScreen(perfeitoEmModoLivre) {
+function showFinalScreen() {
   showScreen("final");
   finalScoreEl.textContent = `${score} de ${GAME_CONFIG.rounds.length} rodadas certas`;
   finalBreakdown.innerHTML = roundResults.map((r, i) => `
@@ -507,11 +508,10 @@ function showFinalScreen(perfeitoEmModoLivre) {
     </li>
   `).join("");
 
-  if (freePlay && perfeitoEmModoLivre) {
-    finalNote.textContent = "🚫 Modo sem prêmio: mesmo acertando tudo, essa jogada não vale bala.";
-  } else if (freePlay) {
-    finalNote.textContent = "Modo sem prêmio — foi só treino, não conta pra bala.";
+  if (freePlay) {
+    finalNote.classList.add("hidden");
   } else {
+    finalNote.classList.remove("hidden");
     finalNote.textContent = "Pra ganhar o ticket, era preciso acertar as 3 rodadas. Obrigado por jogar!";
   }
   finalReplayBtn.classList.toggle("hidden", !freePlay);
@@ -525,7 +525,7 @@ function showTicketScreen() {
 
 async function handleAdminUnlock() {
   adminUnlockMsg.classList.remove("hidden");
-  if (adminPinInput.value !== GAME_CONFIG.adminPin) {
+  if (adminPinInput.value.trim().toLowerCase() !== GAME_CONFIG.adminPin.toLowerCase()) {
     adminUnlockMsg.textContent = "PIN incorreto.";
     adminUnlockMsg.className = "admin-unlock-msg admin-unlock-error";
     return;
