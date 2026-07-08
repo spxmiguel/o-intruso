@@ -106,6 +106,36 @@ body {
   background: rgba(184, 145, 47, 0.15);
 }
 
+.stamp-red {
+  color: var(--vermelho);
+  border-color: var(--vermelho);
+  background: rgba(139, 58, 47, 0.1);
+}
+
+/* ---------- Tela de carregamento / erro / usado ---------- */
+
+.title-sm {
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+}
+
+.loading-text {
+  font-size: clamp(1rem, 2.6vw, 1.2rem);
+  color: var(--marrom-claro);
+  margin: 0;
+}
+
+.ticket-code {
+  font-size: clamp(0.95rem, 2.3vw, 1.1rem);
+  color: var(--marrom-claro);
+  margin: -8px 0 22px;
+  letter-spacing: 1px;
+}
+
+.ticket-code strong {
+  color: var(--oliva-escuro);
+  letter-spacing: 3px;
+}
+
 /* ---------- Tela inicial ---------- */
 
 .title {
@@ -372,4 +402,37 @@ body {
 
 .win-list li .li-emoji {
   margin-right: 6px;
+}
+
+/* ---------- Caixa de prêmio (tela de vitória) ---------- */
+
+.prize-box {
+  background-color: var(--oliva);
+  color: var(--papel);
+  border: 3px solid var(--dourado);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 0 0 26px;
+}
+
+.prize-text {
+  font-size: clamp(1rem, 2.6vw, 1.2rem);
+  font-weight: bold;
+  margin: 0 0 8px;
+}
+
+.prize-code {
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.prize-code strong {
+  color: var(--dourado-claro);
+}
+
+/* ---------- Overlay de derrota ---------- */
+
+.lose-frame .win-title {
+  color: var(--vermelho);
 }

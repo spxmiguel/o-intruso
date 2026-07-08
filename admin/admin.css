@@ -1,0 +1,199 @@
+/* Painel admin — reaproveita variáveis e fontes de style.css */
+
+.admin-body {
+  overflow-x: auto;
+}
+
+.login-frame {
+  max-width: 420px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 6px;
+}
+
+.admin-label {
+  font-size: 0.85rem;
+  color: var(--marrom-claro);
+  letter-spacing: 1px;
+  margin-top: 10px;
+}
+
+.admin-input {
+  font-family: var(--fonte-texto);
+  font-size: 1rem;
+  padding: 10px 12px;
+  border: 2px solid var(--marrom-claro);
+  border-radius: 6px;
+  background-color: var(--papel);
+  color: var(--marrom);
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--oliva);
+}
+
+.login-error {
+  color: var(--vermelho);
+  font-size: 0.9rem;
+  margin: 12px 0 0;
+}
+
+.login-form .btn {
+  margin-top: 20px;
+}
+
+/* ---------- Painel principal ---------- */
+
+.admin-panel {
+  min-height: 100vh;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.admin-title {
+  font-size: clamp(1.3rem, 3.5vw, 1.9rem);
+  color: var(--oliva-escuro);
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.btn-secondary {
+  background-color: var(--papel);
+  color: var(--marrom);
+  border: 2px solid var(--marrom-claro);
+  box-shadow: none;
+  padding: 10px 22px;
+  font-size: 1rem;
+  min-height: auto;
+}
+
+.btn-secondary:active {
+  transform: translateY(2px);
+}
+
+.admin-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background-color: var(--papel);
+  border: 2px solid var(--bege-escuro);
+  border-radius: 8px;
+  padding: 12px 18px;
+  min-width: 120px;
+  text-align: center;
+}
+
+.stat-card .stat-value {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: var(--oliva-escuro);
+  display: block;
+}
+
+.stat-card .stat-label {
+  font-size: 0.75rem;
+  color: var(--marrom-claro);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-toolbar .admin-input {
+  flex: 1;
+  min-width: 180px;
+}
+
+.admin-table-wrap {
+  background-color: var(--papel);
+  border: 2px solid var(--bege-escuro);
+  border-radius: 8px;
+  overflow: auto;
+  max-height: 65vh;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.admin-table th {
+  position: sticky;
+  top: 0;
+  background-color: var(--oliva);
+  color: var(--papel);
+  text-align: left;
+  padding: 10px 14px;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.admin-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--bege-escuro);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table td.code-cell {
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.status-nao-usado {
+  background-color: var(--bege-escuro);
+  color: var(--marrom);
+}
+
+.status-jogando {
+  background-color: #d9ab3d55;
+  color: var(--marrom);
+}
+
+.status-ganhou {
+  background-color: var(--oliva);
+  color: var(--papel);
+}
+
+.status-perdeu {
+  background-color: var(--vermelho);
+  color: var(--papel);
+}

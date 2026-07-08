@@ -5,6 +5,7 @@
    ========================================================= */
 
 const GAME_CONFIG = {
+  maxErros: 2, // quantas tentativas erradas são permitidas antes de perder (0 = só uma chance)
   items: [
     {
       id: "relogio",
@@ -51,21 +52,63 @@ const GAME_CONFIG = {
   ]
 };
 
+const FIREBASE_CONFIG = {
+  projectId: "o-intruso-feira",
+  appId: "1:484196629049:web:49ee632e5d2c2dcd0aabe8",
+  storageBucket: "o-intruso-feira.firebasestorage.app",
+  apiKey: "AIzaSyC7Pn6NgJDVMUaK6Rk3oQp33aceHZGb8gU",
+  authDomain: "o-intruso-feira.firebaseapp.com",
+  messagingSenderId: "484196629049"
+};
+
 /* ========================================================= */
 
-const startScreen   = document.getElementById("start-screen");
-const gameScreen     = document.getElementById("game-screen");
-const grid           = document.getElementById("grid");
-const feedbackPanel  = document.getElementById("feedback-panel");
-const winOverlay     = document.getElementById("win-overlay");
-const winTitle       = document.getElementById("win-title");
-const winExplanation = document.getElementById("win-explanation");
-const winList        = document.getElementById("win-list");
-const playBtn        = document.getElementById("play-btn");
-const playAgainBtn   = document.getElementById("play-again-btn");
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, updateDoc, runTransaction, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
+const app = initializeApp(FIREBASE_CONFIG);
+const db = getFirestore(app);
+
+const screens = {
+  loading: document.getElementById("loading-screen"),
+  error: document.getElementById("error-screen"),
+  used: document.getElementById("used-screen"),
+  start: document.getElementById("start-screen"),
+  game: document.getElementById("game-screen")
+};
+
+const loadingText = document.getElementById("loading-text");
+const errorMessage = document.getElementById("error-message");
+const startTicketCode = document.getElementById("start-ticket-code");
+const playBtn = document.getElementById("play-btn");
+
+const grid = document.getElementById("grid");
+const gameHint = document.getElementById("game-hint");
+const feedbackPanel = document.getElementById("feedback-panel");
+
+const winOverlay = document.getElementById("win-overlay");
+const winTitle = document.getElementById("win-title");
+const winExplanation = document.getElementById("win-explanation");
+const winList = document.getElementById("win-list");
+const winTicketCode = document.getElementById("win-ticket-code");
+
+const loseOverlay = document.getElementById("lose-overlay");
+const loseTitle = document.getElementById("lose-title");
+const loseExplanation = document.getElementById("lose-explanation");
+const loseList = document.getElementById("lose-list");
+
+let ticketCode = null;
+let ticketRef = null;
 let solved = false;
-let wrongIds = new Set();
+let wrongCount = 0;
+const wrongIds = new Set();
+
+function showScreen(name) {
+  Object.values(screens).forEach((el) => el.classList.add("hidden"));
+  screens[name].classList.remove("hidden");
+}
 
 function shuffle(array) {
   const copy = array.slice();
@@ -76,19 +119,72 @@ function shuffle(array) {
   return copy;
 }
 
-function startGame() {
-  startScreen.classList.add("hidden");
-  gameScreen.classList.remove("hidden");
-  initGame();
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  ticketCode = (params.get("codigo") || "").trim().toUpperCase();
+
+  if (!ticketCode) {
+    errorMessage.textContent = "Escaneie o QR code do seu cupom pra jogar.";
+    showScreen("error");
+    return;
+  }
+
+  ticketRef = doc(db, "tickets", ticketCode);
+
+  let ticketSnap;
+  try {
+    ticketSnap = await getDoc(ticketRef);
+  } catch (err) {
+    errorMessage.textContent = "Não conseguimos conectar. Verifique sua internet e recarregue a página.";
+    showScreen("error");
+    return;
+  }
+
+  if (!ticketSnap.exists()) {
+    errorMessage.textContent = "Esse cupom não existe. Confira o código ou procure a equipe.";
+    showScreen("error");
+    return;
+  }
+
+  if (ticketSnap.data().usado) {
+    showScreen("used");
+    return;
+  }
+
+  // Reserva o cupom via transação: só o primeiro acesso simultâneo consegue.
+  try {
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(ticketRef);
+      if (!snap.exists() || snap.data().usado) {
+        throw new Error("ALREADY_USED");
+      }
+      tx.update(ticketRef, { usado: true, jogadoEm: serverTimestamp() });
+    });
+  } catch (err) {
+    showScreen("used");
+    return;
+  }
+
+  startTicketCode.textContent = ticketCode;
+  showScreen("start");
 }
 
-function initGame() {
+function startGame() {
+  showScreen("game");
   solved = false;
-  wrongIds = new Set();
+  wrongCount = 0;
+  wrongIds.clear();
   feedbackPanel.classList.remove("show");
   feedbackPanel.textContent = "";
-  winOverlay.classList.add("hidden");
+  updateHint();
   renderGrid();
+}
+
+function updateHint() {
+  const restantes = GAME_CONFIG.maxErros - wrongCount;
+  gameHint.textContent = restantes <= 0
+    ? "Última chance! Toque no objeto certo."
+    : `Toque no objeto que não tem origem na guerra (${restantes + 1} tentativa${restantes + 1 === 1 ? "" : "s"} restante${restantes + 1 === 1 ? "" : "s"})`;
 }
 
 function renderGrid() {
@@ -117,12 +213,32 @@ function handleCardClick(item, cardEl) {
     solved = true;
     cardEl.classList.add("correct");
     feedbackPanel.classList.remove("show");
+    finishTicket("ganhou");
     setTimeout(() => showWinOverlay(item), 400);
   } else {
+    wrongCount += 1;
     wrongIds.add(item.id);
     cardEl.classList.add("wrong", "shake");
     setTimeout(() => cardEl.classList.remove("shake"), 400);
-    showWrongFeedback(item);
+
+    if (wrongCount > GAME_CONFIG.maxErros) {
+      solved = true;
+      finishTicket("perdeu");
+      setTimeout(() => showLoseOverlay(item), 400);
+    } else {
+      updateHint();
+      showWrongFeedback(item);
+    }
+  }
+}
+
+async function finishTicket(resultado) {
+  try {
+    await updateDoc(ticketRef, { resultado, finalizadoEm: serverTimestamp() });
+  } catch (err) {
+    // Se a gravação falhar (ex: sem internet), o jogador ainda vê o resultado na tela;
+    // a equipe confere manualmente pelo painel /admin se precisar.
+    console.error("Falha ao salvar resultado do cupom:", err);
   }
 }
 
@@ -134,12 +250,10 @@ function showWrongFeedback(item) {
   feedbackPanel.classList.add("show");
 }
 
-function showWinOverlay(intruderItem) {
-  winTitle.textContent = `${intruderItem.emoji} ${intruderItem.name} é o Intruso!`;
-  winExplanation.textContent = intruderItem.origin;
-
-  winList.innerHTML = "";
+function buildOtherItemsList(listEl, excludeIntruder) {
+  listEl.innerHTML = "";
   GAME_CONFIG.items
+    .filter((item) => !item.isIntruder || !excludeIntruder)
     .filter((item) => !item.isIntruder)
     .forEach((item) => {
       const li = document.createElement("li");
@@ -147,14 +261,25 @@ function showWinOverlay(intruderItem) {
         <strong><span class="li-emoji">${item.emoji}</span>${item.name}</strong>
         ${item.origin}
       `;
-      winList.appendChild(li);
+      listEl.appendChild(li);
     });
+}
 
+function showWinOverlay(intruderItem) {
+  winTitle.textContent = `${intruderItem.emoji} ${intruderItem.name} é o Intruso!`;
+  winExplanation.textContent = intruderItem.origin;
+  winTicketCode.textContent = ticketCode;
+  buildOtherItemsList(winList, true);
   winOverlay.classList.remove("hidden");
 }
 
+function showLoseOverlay(lastWrongItem) {
+  const intruderItem = GAME_CONFIG.items.find((item) => item.isIntruder);
+  loseExplanation.textContent = `O intruso era ${intruderItem.emoji} ${intruderItem.name}: ${intruderItem.origin}`;
+  buildOtherItemsList(loseList, true);
+  loseOverlay.classList.remove("hidden");
+}
+
 playBtn.addEventListener("click", startGame);
-playAgainBtn.addEventListener("click", () => {
-  winOverlay.classList.add("hidden");
-  initGame();
-});
+
+init();

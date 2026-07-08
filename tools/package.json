@@ -1,0 +1,12 @@
+{
+  "name": "o-intruso-tools",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "gerar-cupons": "node generate-tickets.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "qrcode": "^1.5.4"
+  }
+}

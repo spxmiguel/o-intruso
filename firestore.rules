@@ -1,0 +1,45 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'equipe@ointruso.app';
+    }
+
+    function claimingTicket() {
+      // Fase 1: reservar o cupom (usado: false -> true), sem mexer no resultado.
+      return resource.data.usado == false
+        && request.resource.data.usado == true
+        && request.resource.data.resultado == resource.data.resultado
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['usado', 'jogadoEm']);
+    }
+
+    function finishingTicket() {
+      // Fase 2: gravar o resultado final, uma única vez, só depois de reservado.
+      return resource.data.usado == true
+        && resource.data.resultado == null
+        && request.resource.data.usado == true
+        && request.resource.data.resultado in ['ganhou', 'perdeu']
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resultado', 'finalizadoEm']);
+    }
+
+    match /tickets/{ticketId} {
+      // Leitura de um cupom específico: precisa saber o código exato (usado pelo jogo).
+      // Listar a coleção inteira só é permitido pro painel admin autenticado.
+      allow get: if true;
+      allow list: if isAdmin();
+
+      allow update: if claimingTicket() || finishingTicket() || isAdmin();
+
+      // Cupons só são criados pelo script administrativo (Admin SDK, que ignora regras).
+      allow create: if false;
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

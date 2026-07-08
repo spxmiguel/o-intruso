@@ -8,13 +8,43 @@
 </head>
 <body>
 
-  <!-- TELA INICIAL -->
-  <section id="start-screen" class="screen">
+  <!-- TELA DE CARREGAMENTO / VALIDAÇÃO DO CUPOM -->
+  <section id="loading-screen" class="screen">
+    <div class="paper-frame loading-frame">
+      <p class="stamp">FEIRA DE CIÊNCIAS &middot; 1939&ndash;1945</p>
+      <h1 class="title title-sm">O INTRUSO</h1>
+      <p class="loading-text" id="loading-text">Validando seu cupom&hellip;</p>
+    </div>
+  </section>
+
+  <!-- TELA DE ERRO (cupom inválido / sem cupom) -->
+  <section id="error-screen" class="screen hidden">
+    <div class="paper-frame">
+      <p class="stamp stamp-red">CUPOM INVÁLIDO</p>
+      <h1 class="title title-sm">Ops!</h1>
+      <p class="subtitle" id="error-message">Não conseguimos validar esse cupom.</p>
+      <p class="instructions">Procure a equipe do estande para pegar um cupom válido.</p>
+    </div>
+  </section>
+
+  <!-- TELA DE CUPOM JÁ USADO -->
+  <section id="used-screen" class="screen hidden">
+    <div class="paper-frame">
+      <p class="stamp stamp-red">JÁ UTILIZADO</p>
+      <h1 class="title title-sm">Esse cupom já foi jogado!</h1>
+      <p class="subtitle">Cada cupom vale uma única partida.</p>
+      <p class="instructions">Pega um cupom novo com a equipe pra tentar de novo.</p>
+    </div>
+  </section>
+
+  <!-- TELA INICIAL (cupom validado, pronto pra jogar) -->
+  <section id="start-screen" class="screen hidden">
     <div class="paper-frame start-frame">
       <p class="stamp">FEIRA DE CIÊNCIAS &middot; 1939&ndash;1945</p>
       <h1 class="title">O INTRUSO</h1>
       <p class="subtitle">Seis objetos. Cinco nasceram na guerra.<br>Um deles não tem nada a ver com isso.</p>
       <p class="instructions">Toque no objeto que você acha que <strong>NÃO</strong> tem origem na Segunda Guerra Mundial.</p>
+      <p class="ticket-code">Cupom: <strong id="start-ticket-code">------</strong></p>
       <button id="play-btn" class="btn btn-primary" type="button">▶ JOGAR</button>
     </div>
   </section>
@@ -23,7 +53,7 @@
   <section id="game-screen" class="screen hidden">
     <header class="game-header">
       <h2 class="game-title">Qual é o Intruso?</h2>
-      <p class="game-hint">Toque no objeto que não tem origem na guerra</p>
+      <p class="game-hint" id="game-hint">Toque no objeto que não tem origem na guerra</p>
     </header>
 
     <div id="grid" class="grid"></div>
@@ -34,17 +64,34 @@
   <!-- OVERLAY DE ACERTO -->
   <div id="win-overlay" class="overlay hidden">
     <div class="paper-frame win-frame">
-      <p class="stamp stamp-gold">ACERTOU!</p>
+      <p class="stamp stamp-gold">GANHOU! 🎉</p>
       <h2 id="win-title" class="win-title"></h2>
       <p id="win-explanation" class="win-explanation"></p>
 
+      <div class="prize-box">
+        <p class="prize-text">Mostra essa tela pra equipe e pega sua bala!</p>
+        <p class="prize-code">Cupom: <strong id="win-ticket-code">------</strong></p>
+      </div>
+
       <h3 class="win-subheading">E os outros objetos?</h3>
       <ul id="win-list" class="win-list"></ul>
-
-      <button id="play-again-btn" class="btn btn-primary" type="button">JOGAR NOVAMENTE</button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- OVERLAY DE DERROTA -->
+  <div id="lose-overlay" class="overlay hidden">
+    <div class="paper-frame lose-frame">
+      <p class="stamp stamp-red">NÃO DESSA VEZ</p>
+      <h2 id="lose-title" class="win-title">O Intruso era outro...</h2>
+      <p id="lose-explanation" class="win-explanation"></p>
+
+      <h3 class="win-subheading">E os outros objetos?</h3>
+      <ul id="lose-list" class="win-list"></ul>
+
+      <p class="instructions">Esse cupom já foi usado. Pega um cupom novo pra tentar de novo!</p>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>

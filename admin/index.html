@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Intruso — Painel da Equipe</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- LOGIN -->
+  <section id="login-screen" class="screen">
+    <div class="paper-frame login-frame">
+      <p class="stamp">ÁREA RESTRITA</p>
+      <h1 class="title title-sm">Painel da Equipe</h1>
+      <form id="login-form" class="login-form">
+        <label class="admin-label" for="email">E-mail</label>
+        <input class="admin-input" type="email" id="email" autocomplete="username" required>
+
+        <label class="admin-label" for="password">Senha</label>
+        <input class="admin-input" type="password" id="password" autocomplete="current-password" required>
+
+        <p id="login-error" class="login-error hidden"></p>
+
+        <button class="btn btn-primary" type="submit">ENTRAR</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- PAINEL -->
+  <section id="panel-screen" class="admin-panel hidden">
+    <header class="admin-header">
+      <h1 class="admin-title">O Intruso — Painel da Equipe</h1>
+      <button id="logout-btn" class="btn btn-secondary" type="button">Sair</button>
+    </header>
+
+    <div class="admin-stats" id="admin-stats"></div>
+
+    <div class="admin-toolbar">
+      <input id="search-input" class="admin-input" type="text" placeholder="Buscar por código...">
+      <select id="filter-select" class="admin-input">
+        <option value="todos">Todos os status</option>
+        <option value="nao-usado">Não usado</option>
+        <option value="jogando">Jogando</option>
+        <option value="ganhou">Ganhou</option>
+        <option value="perdeu">Perdeu</option>
+      </select>
+    </div>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Status</th>
+            <th>Criado em</th>
+            <th>Jogado em</th>
+            <th>Finalizado em</th>
+          </tr>
+        </thead>
+        <tbody id="tickets-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
