@@ -1,6 +1,7 @@
 /* =========================================================
    O INTRUSO — tema vintage anos 1940
-   Sem fontes/ícones externos: tudo em CSS + fontes de sistema.
+   Sem fontes externas: tudo em CSS + fontes de sistema.
+   Imagens reais ficam em /images.
    ========================================================= */
 
 :root {
@@ -112,30 +113,6 @@ body {
   background: rgba(139, 58, 47, 0.1);
 }
 
-/* ---------- Tela de carregamento / erro / usado ---------- */
-
-.title-sm {
-  font-size: clamp(1.8rem, 6vw, 2.6rem);
-}
-
-.loading-text {
-  font-size: clamp(1rem, 2.6vw, 1.2rem);
-  color: var(--marrom-claro);
-  margin: 0;
-}
-
-.ticket-code {
-  font-size: clamp(0.95rem, 2.3vw, 1.1rem);
-  color: var(--marrom-claro);
-  margin: -8px 0 22px;
-  letter-spacing: 1px;
-}
-
-.ticket-code strong {
-  color: var(--oliva-escuro);
-  letter-spacing: 3px;
-}
-
 /* ---------- Tela inicial ---------- */
 
 .title {
@@ -145,6 +122,10 @@ body {
   color: var(--oliva-escuro);
   text-shadow: 2px 2px 0 var(--dourado-claro);
   font-weight: bold;
+}
+
+.title-sm {
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
 }
 
 .subtitle {
@@ -186,62 +167,6 @@ body {
   box-shadow: 0 1px 0 var(--oliva-escuro), 0 2px 6px var(--sombra);
 }
 
-.btn-secondary {
-  background-color: var(--papel);
-  color: var(--marrom-claro);
-  border: 3px dashed var(--marrom-claro);
-  box-shadow: none;
-  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
-  padding: 14px 28px;
-  min-height: auto;
-}
-
-.btn-secondary:active {
-  transform: translateY(2px);
-}
-
-/* ---------- Tela de entrada manual do cupom ---------- */
-
-.entry-form {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin: 0 0 22px;
-}
-
-.entry-input {
-  font-family: var(--fonte-titulo);
-  font-size: clamp(1.2rem, 4vw, 1.6rem);
-  font-weight: bold;
-  letter-spacing: 4px;
-  text-align: center;
-  text-transform: uppercase;
-  padding: 14px 12px;
-  border: 3px solid var(--marrom-claro);
-  border-radius: 6px;
-  background-color: var(--papel);
-  color: var(--marrom);
-}
-
-.entry-input:focus {
-  outline: none;
-  border-color: var(--oliva);
-}
-
-.login-error {
-  color: var(--vermelho);
-  font-size: 0.9rem;
-  margin: -6px 0 0;
-}
-
-.free-play-divider {
-  color: var(--marrom-claro);
-  font-size: 0.85rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin: 4px 0 16px;
-}
-
 /* ---------- Tela do jogo ---------- */
 
 #game-screen {
@@ -255,6 +180,19 @@ body {
   margin-bottom: 20px;
 }
 
+.round-indicator {
+  display: inline-block;
+  background-color: var(--oliva);
+  color: var(--papel);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  font-weight: bold;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+
 .game-title {
   font-size: clamp(1.6rem, 5vw, 2.4rem);
   letter-spacing: 3px;
@@ -266,18 +204,6 @@ body {
   color: var(--marrom-claro);
   font-size: clamp(0.9rem, 2.2vw, 1.05rem);
   margin: 0;
-}
-
-.mode-badge {
-  display: inline-block;
-  background-color: var(--vermelho);
-  color: var(--papel);
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  font-weight: bold;
-  padding: 5px 14px;
-  border-radius: 20px;
-  margin: 0 0 10px;
 }
 
 .grid {
@@ -301,8 +227,8 @@ body {
   border: 3px solid var(--marrom);
   border-radius: 10px;
   box-shadow: 0 0 0 4px var(--bege-escuro), 4px 6px 14px var(--sombra);
-  padding: 20px 12px;
-  min-height: 150px;
+  padding: 14px 12px;
+  min-height: 190px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -315,8 +241,8 @@ body {
 
 @media (min-width: 700px) {
   .card {
-    min-height: 190px;
-    padding: 26px 16px;
+    min-height: 230px;
+    padding: 18px 16px;
   }
 }
 
@@ -324,15 +250,26 @@ body {
   transform: scale(0.96);
 }
 
-.card-emoji {
-  font-size: clamp(2.6rem, 8vw, 4rem);
-  line-height: 1;
+.card-image-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid var(--bege-escuro);
+  background-color: var(--bege);
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .card-name {
-  font-size: clamp(0.9rem, 2.4vw, 1.15rem);
+  font-size: clamp(0.85rem, 2.2vw, 1.05rem);
   font-weight: bold;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   text-align: center;
 }
 
@@ -340,14 +277,9 @@ body {
   background-color: #e4d5b0;
   border-color: var(--vermelho);
   opacity: 0.55;
-  filter: grayscale(0.4);
+  filter: grayscale(0.6);
   cursor: default;
   pointer-events: none;
-}
-
-.card.wrong::after {
-  content: "✕";
-  position: absolute;
 }
 
 .card.correct {
@@ -401,7 +333,7 @@ body {
   padding: 16px 20px;
 }
 
-/* ---------- Overlay de acerto ---------- */
+/* ---------- Overlay de resultado da rodada ---------- */
 
 .overlay {
   position: fixed;
@@ -468,48 +400,42 @@ body {
   margin-bottom: 3px;
 }
 
-.win-list li .li-emoji {
-  margin-right: 6px;
+/* ---------- Tela de resultado final ---------- */
+
+.final-frame {
+  max-width: 560px;
 }
 
-/* ---------- Caixa de prêmio (tela de vitória) ---------- */
-
-.prize-box {
-  background-color: var(--oliva);
-  color: var(--papel);
-  border: 3px solid var(--dourado);
-  border-radius: 8px;
-  padding: 16px 20px;
-  margin: 0 0 26px;
-}
-
-.prize-text {
-  font-size: clamp(1rem, 2.6vw, 1.2rem);
+.final-score {
+  font-size: clamp(1.3rem, 4vw, 1.7rem);
   font-weight: bold;
-  margin: 0 0 8px;
+  color: var(--oliva-escuro);
+  margin: 0 0 22px;
 }
 
-.prize-code {
-  font-size: clamp(1.1rem, 3vw, 1.4rem);
-  margin: 0;
-  letter-spacing: 2px;
+.final-breakdown {
+  list-style: none;
+  margin: 0 0 30px;
+  padding: 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.prize-code strong {
-  color: var(--dourado-claro);
+.final-breakdown li {
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: clamp(0.9rem, 2.2vw, 1.02rem);
+  border: 2px solid var(--bege-escuro);
 }
 
-.prize-box-warning {
-  background-color: var(--vermelho);
-  border-color: var(--papel);
+.breakdown-ok {
+  background-color: rgba(92, 107, 61, 0.15);
+  border-color: var(--oliva) !important;
 }
 
-.prize-box-warning .prize-text {
-  margin: 0;
-}
-
-/* ---------- Overlay de derrota ---------- */
-
-.lose-frame .win-title {
-  color: var(--vermelho);
+.breakdown-fail {
+  background-color: rgba(139, 58, 47, 0.1);
+  border-color: var(--vermelho) !important;
 }

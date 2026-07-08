@@ -1,122 +1,193 @@
 /* =========================================================
    O INTRUSO — config do jogo
-   Para trocar o intruso: mova "isIntruder: true" para outro item.
-   Para trocar textos: edite "name" e "origin" à vontade.
+   Cada rodada tem 6 itens: 5 com origem na guerra + 1 intruso
+   (marcado com isIntruder: true). Pra trocar o intruso de uma
+   rodada, mova a flag pra outro item. Pra trocar textos, edite
+   "name" e "origin". Imagens ficam em /images.
    ========================================================= */
 
 const GAME_CONFIG = {
-  maxErros: 2, // quantas tentativas erradas são permitidas antes de perder (0 = só uma chance)
-  masterCode: "TESTTUTS", // cupom da equipe: ilimitado, nunca é marcado como usado
-  items: [
+  maxErrosPorRodada: 1, // erros permitidos antes de a rodada ser considerada errada
+  rounds: [
     {
-      id: "relogio",
-      emoji: "⌚",
-      name: "Relógio de pulso",
-      isIntruder: false,
-      origin: "Antes da guerra, o relógio de bolso era o padrão. Nas trincheiras os soldados precisavam sincronizar ataques com as mãos livres, então passaram a usar relógios presos ao pulso — depois da guerra o hábito virou moda civil."
+      title: "Objetos do dia a dia",
+      items: [
+        {
+          id: "relogio",
+          name: "Relógio de pulso",
+          img: "images/relogio.jpg",
+          isIntruder: false,
+          origin: "Antes da guerra, o relógio de bolso era o padrão. Nas trincheiras os soldados precisavam sincronizar ataques com as mãos livres, então passaram a usar relógios presos ao pulso — depois da guerra o hábito virou moda civil."
+        },
+        {
+          id: "fanta",
+          name: "Fanta",
+          img: "images/fanta.jpg",
+          isIntruder: false,
+          origin: "Foi criada em 1940 na fábrica alemã da Coca-Cola, quando o embargo comercial da guerra impediu a importação do xarope original. A solução foi inventar um refrigerante novo com o que havia disponível na época, como soro de leite e polpa de maçã."
+        },
+        {
+          id: "microondas",
+          name: "Micro-ondas",
+          img: "images/microondas.jpg",
+          isIntruder: false,
+          origin: "Foi descoberto por acidente em 1945: um engenheiro que trabalhava com radares militares (magnetron) percebeu que uma barra de chocolate no seu bolso derreteu perto do equipamento."
+        },
+        {
+          id: "meia-nylon",
+          name: "Meia de nylon",
+          img: "images/meia-nylon.jpg",
+          isIntruder: false,
+          origin: "O nylon já existia, mas sua produção foi escalada pela DuPont para uso militar — paraquedas, cordas, coletes. Depois da guerra, sobrou material e a indústria têxtil o popularizou nas meias femininas."
+        },
+        {
+          id: "ziper",
+          name: "Zíper",
+          img: "images/ziper.jpg",
+          isIntruder: false,
+          origin: "Já era conhecido antes da guerra, mas sua fabricação em larga escala decolou por causa da alta demanda por uniformes, botas e equipamentos militares que precisavam dele."
+        },
+        {
+          id: "qrcode",
+          name: "QR Code",
+          img: "images/qrcode.png",
+          isIntruder: true,
+          origin: "É 100% moderno: foi criado em 1994, no Japão, para rastrear peças na indústria automotiva. Não tem nenhuma relação com a Segunda Guerra Mundial."
+        }
+      ]
     },
     {
-      id: "fanta",
-      emoji: "🥤",
-      name: "Fanta",
-      isIntruder: false,
-      origin: "Foi criada em 1940 na fábrica alemã da Coca-Cola, quando o embargo comercial da guerra impediu a importação do xarope original. A solução foi inventar um refrigerante novo com o que havia disponível na época, como soro de leite e polpa de maçã."
+      title: "Comida e consumo",
+      items: [
+        {
+          id: "mms",
+          name: "M&M's",
+          img: "images/mms.jpg",
+          isIntruder: false,
+          origin: "Criado em 1941 por Forrest Mars, inspirado nos doces com casquinha de açúcar que ele viu soldados comerem na Guerra Civil Espanhola pra não derreter no calor. Viraram parte da ração militar americana e só chegaram ao mercado civil depois da guerra."
+        },
+        {
+          id: "cafe-soluvel",
+          name: "Café solúvel",
+          img: "images/cafe-soluvel.jpg",
+          isIntruder: false,
+          origin: "A Nescafé (criada em 1938) teve a produção multiplicada durante a guerra pra abastecer os soldados americanos com café rápido no campo de batalha — foi isso que popularizou o café instantâneo no mundo todo."
+        },
+        {
+          id: "spam",
+          name: "Spam (carne enlatada)",
+          img: "images/spam.jpg",
+          isIntruder: false,
+          origin: "Existia desde 1937, mas só ficou mundialmente famosa por causa da guerra: foram enviadas milhões de latas pras tropas aliadas, virando sinônimo de comida enlatada em vários países até hoje."
+        },
+        {
+          id: "chiclete",
+          name: "Chiclete",
+          img: "images/chiclete.jpg",
+          isIntruder: false,
+          origin: "A goma de mascar já existia, mas os chicletes incluídos nas rações dos soldados americanos espalharam o hábito de mascar chiclete pelo mundo, principalmente na Europa e no Japão, durante e depois da guerra."
+        },
+        {
+          id: "oculos-aviador",
+          name: "Óculos aviador",
+          img: "images/oculos-aviador.jpg",
+          isIntruder: false,
+          origin: "Desenvolvidos pela Ray-Ban em 1936-37 pros pilotos da força aérea americana se protegerem do sol em altitude. Ficaram famosos mundialmente por fotos de generais e pilotos usando eles durante a guerra."
+        },
+        {
+          id: "energetico",
+          name: "Bebida energética",
+          img: "images/energetico.jpg",
+          isIntruder: true,
+          origin: "As bebidas energéticas modernas (tipo as que a gente bebe hoje) só surgiram em 1987, na Áustria — décadas depois da guerra, sem nenhuma relação com ela."
+        }
+      ]
     },
     {
-      id: "microondas",
-      emoji: "📡",
-      name: "Micro-ondas",
-      isIntruder: false,
-      origin: "Foi descoberto por acidente em 1945: um engenheiro que trabalhava com radares militares (magnetron) percebeu que uma barra de chocolate no seu bolso derreteu perto do equipamento."
-    },
-    {
-      id: "meia-nylon",
-      emoji: "🧦",
-      name: "Meia de nylon",
-      isIntruder: false,
-      origin: "O nylon já existia, mas sua produção foi escalada pela DuPont para uso militar — paraquedas, cordas, coletes. Depois da guerra, sobrou material e a indústria têxtil o popularizou nas meias femininas."
-    },
-    {
-      id: "ziper",
-      emoji: "🤐",
-      name: "Zíper",
-      isIntruder: false,
-      origin: "Já era conhecido antes da guerra, mas sua fabricação em larga escala decolou por causa da alta demanda por uniformes, botas e equipamentos militares que precisavam dele."
-    },
-    {
-      id: "qrcode",
-      emoji: "🔳",
-      name: "QR Code",
-      isIntruder: true,
-      origin: "É 100% moderno: foi criado em 1994, no Japão, para rastrear peças na indústria automotiva. Não tem nenhuma relação com a Segunda Guerra Mundial — aliás, foi um QR code parecido com esse que você escaneou para jogar!"
+      title: "Ciência e materiais",
+      items: [
+        {
+          id: "fita-adesiva",
+          name: "Fita adesiva (duct tape)",
+          img: "images/fita-adesiva.jpg",
+          isIntruder: false,
+          origin: "Criada em 1942 por uma divisão da Johnson & Johnson para o exército americano vedar caixas de munição contra umidade. Depois da guerra virou item básico de qualquer caixa de ferramentas."
+        },
+        {
+          id: "super-bonder",
+          name: "Cola instantânea",
+          img: "images/super-bonder.jpg",
+          isIntruder: false,
+          origin: "O cianoacrilato foi descoberto por acaso em 1942 por um cientista tentando criar miras de fuzil transparentes pra guerra. Só virou a cola instantânea que conhecemos anos depois."
+        },
+        {
+          id: "penicilina",
+          name: "Penicilina",
+          img: "images/penicilina.jpg",
+          isIntruder: false,
+          origin: "Foi descoberta em 1928, mas a produção em larga escala só aconteceu durante a guerra, numa corrida acelerada pra tratar milhares de soldados feridos — foi a guerra que transformou a penicilina num remédio acessível de verdade."
+        },
+        {
+          id: "silly-putty",
+          name: "Massinha maluca (Silly Putty)",
+          img: "images/silly-putty.jpg",
+          isIntruder: false,
+          origin: "Surgiu em 1943 quando um cientista tentava criar um substituto sintético pra borracha, que estava racionada por causa do esforço de guerra."
+        },
+        {
+          id: "slinky",
+          name: "Mola brinquedo (Slinky)",
+          img: "images/slinky.jpg",
+          isIntruder: false,
+          origin: "Inventada em 1943 por um engenheiro naval que testava molas pra estabilizar equipamentos sensíveis em navios de guerra. Uma mola caiu da mesa dele, ficou 'andando', e virou um dos brinquedos mais vendidos da história."
+        },
+        {
+          id: "velcro",
+          name: "Velcro",
+          img: "images/velcro.jpg",
+          isIntruder: true,
+          origin: "Foi inventado em 1941 — bem na época da guerra — mas não tem nenhuma relação com ela: o suíço George de Mestral teve a ideia depois de tirar carrapichos do pelo do seu cachorro numa caminhada nos Alpes. Só foi patenteado em 1955."
+        }
+      ]
     }
   ]
 };
 
-const FIREBASE_CONFIG = {
-  projectId: "o-intruso-feira",
-  appId: "1:484196629049:web:49ee632e5d2c2dcd0aabe8",
-  storageBucket: "o-intruso-feira.firebasestorage.app",
-  apiKey: "AIzaSyC7Pn6NgJDVMUaK6Rk3oQp33aceHZGb8gU",
-  authDomain: "o-intruso-feira.firebaseapp.com",
-  messagingSenderId: "484196629049"
-};
-
 /* ========================================================= */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import {
-  getFirestore, doc, getDoc, updateDoc, runTransaction, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const startScreen = document.getElementById("start-screen");
+const gameScreen = document.getElementById("game-screen");
+const finalScreen = document.getElementById("final-screen");
 
-const app = initializeApp(FIREBASE_CONFIG);
-const db = getFirestore(app);
-
-const screens = {
-  loading: document.getElementById("loading-screen"),
-  entry: document.getElementById("entry-screen"),
-  used: document.getElementById("used-screen"),
-  start: document.getElementById("start-screen"),
-  game: document.getElementById("game-screen")
-};
-
-const entryForm = document.getElementById("entry-form");
-const entryInput = document.getElementById("entry-input");
-const entryError = document.getElementById("entry-error");
-const freePlayBtn = document.getElementById("free-play-btn");
-
-const startTicketCode = document.getElementById("start-ticket-code");
 const playBtn = document.getElementById("play-btn");
+const playAgainBtn = document.getElementById("play-again-btn");
 
-const grid = document.getElementById("grid");
+const roundIndicator = document.getElementById("round-indicator");
+const roundTitle = document.getElementById("round-title");
 const gameHint = document.getElementById("game-hint");
-const modeBadge = document.getElementById("mode-badge");
+const grid = document.getElementById("grid");
 const feedbackPanel = document.getElementById("feedback-panel");
 
-const winOverlay = document.getElementById("win-overlay");
-const winStamp = document.getElementById("win-stamp");
-const winTitle = document.getElementById("win-title");
-const winExplanation = document.getElementById("win-explanation");
-const winList = document.getElementById("win-list");
-const prizeBox = document.getElementById("prize-box");
-const winTicketCode = document.getElementById("win-ticket-code");
+const roundOverlay = document.getElementById("round-overlay");
+const roundStamp = document.getElementById("round-stamp");
+const roundResultTitle = document.getElementById("round-result-title");
+const roundResultExplanation = document.getElementById("round-result-explanation");
+const roundResultList = document.getElementById("round-result-list");
+const nextRoundBtn = document.getElementById("next-round-btn");
 
-const loseOverlay = document.getElementById("lose-overlay");
-const loseExplanation = document.getElementById("lose-explanation");
-const loseList = document.getElementById("lose-list");
-const loseFooter = document.getElementById("lose-footer");
+const finalScoreEl = document.getElementById("final-score");
+const finalBreakdown = document.getElementById("final-breakdown");
 
-let ticketCode = null;
-let ticketRef = null;
-let isMaster = false;
-let freePlay = false;
+let currentRound = 0;
+let score = 0;
+let roundResults = [];
 let solved = false;
 let wrongCount = 0;
 const wrongIds = new Set();
 
-function showScreen(name) {
-  Object.values(screens).forEach((el) => el.classList.add("hidden"));
-  screens[name].classList.remove("hidden");
+function showScreen(el) {
+  [startScreen, gameScreen, finalScreen].forEach((s) => s.classList.add("hidden"));
+  el.classList.remove("hidden");
 }
 
 function shuffle(array) {
@@ -128,99 +199,38 @@ function shuffle(array) {
   return copy;
 }
 
-async function init() {
-  const params = new URLSearchParams(window.location.search);
-  const codeFromUrl = (params.get("codigo") || "").trim().toUpperCase();
-
-  if (codeFromUrl) {
-    await validateCode(codeFromUrl);
-  } else {
-    showScreen("entry");
-  }
-}
-
-function showEntryError(message) {
-  entryError.textContent = message;
-  entryError.classList.remove("hidden");
-  showScreen("entry");
-}
-
-async function validateCode(code) {
-  showScreen("loading");
-
-  if (code === GAME_CONFIG.masterCode) {
-    ticketCode = code;
-    ticketRef = null;
-    isMaster = true;
-    freePlay = false;
-    startTicketCode.textContent = `${code} (ilimitado)`;
-    showScreen("start");
-    return;
-  }
-
-  const ref = doc(db, "tickets", code);
-  let ticketSnap;
-  try {
-    ticketSnap = await getDoc(ref);
-  } catch (err) {
-    showEntryError("Não conseguimos conectar. Verifique sua internet e tente de novo.");
-    return;
-  }
-
-  if (!ticketSnap.exists()) {
-    showEntryError(`O cupom "${code}" não existe. Confira o código ou procure a equipe.`);
-    return;
-  }
-
-  if (ticketSnap.data().usado) {
-    showScreen("used");
-    return;
-  }
-
-  // Reserva o cupom via transação: só o primeiro acesso simultâneo consegue.
-  try {
-    await runTransaction(db, async (tx) => {
-      const snap = await tx.get(ref);
-      if (!snap.exists() || snap.data().usado) {
-        throw new Error("ALREADY_USED");
-      }
-      tx.update(ref, { usado: true, jogadoEm: serverTimestamp() });
-    });
-  } catch (err) {
-    showScreen("used");
-    return;
-  }
-
-  ticketCode = code;
-  ticketRef = ref;
-  isMaster = false;
-  freePlay = false;
-  startTicketCode.textContent = code;
-  showScreen("start");
-}
-
 function startGame() {
-  showScreen("game");
-  modeBadge.classList.toggle("hidden", !freePlay);
+  currentRound = 0;
+  score = 0;
+  roundResults = [];
+  showScreen(gameScreen);
+  startRound();
+}
+
+function startRound() {
+  const round = GAME_CONFIG.rounds[currentRound];
   solved = false;
   wrongCount = 0;
   wrongIds.clear();
   feedbackPanel.classList.remove("show");
   feedbackPanel.textContent = "";
+
+  roundIndicator.textContent = `Rodada ${currentRound + 1} de ${GAME_CONFIG.rounds.length}`;
+  roundTitle.textContent = round.title;
   updateHint();
-  renderGrid();
+  renderGrid(round);
 }
 
 function updateHint() {
-  const restantes = GAME_CONFIG.maxErros - wrongCount;
+  const restantes = GAME_CONFIG.maxErrosPorRodada - wrongCount;
   gameHint.textContent = restantes <= 0
     ? "Última chance! Toque no objeto certo."
-    : `Toque no objeto que não tem origem na guerra (${restantes + 1} tentativa${restantes + 1 === 1 ? "" : "s"} restante${restantes + 1 === 1 ? "" : "s"})`;
+    : "Toque no objeto que não tem origem na guerra";
 }
 
-function renderGrid() {
+function renderGrid(round) {
   grid.innerHTML = "";
-  const shuffled = shuffle(GAME_CONFIG.items);
+  const shuffled = shuffle(round.items);
 
   shuffled.forEach((item) => {
     const card = document.createElement("button");
@@ -229,7 +239,7 @@ function renderGrid() {
     card.dataset.id = item.id;
     card.setAttribute("aria-label", item.name);
     card.innerHTML = `
-      <span class="card-emoji">${item.emoji}</span>
+      <span class="card-image-wrap"><img class="card-image" src="${item.img}" alt="${item.name}" loading="lazy"></span>
       <span class="card-name">${item.name}</span>
     `;
     card.addEventListener("click", () => handleCardClick(item, card));
@@ -244,34 +254,24 @@ function handleCardClick(item, cardEl) {
     solved = true;
     cardEl.classList.add("correct");
     feedbackPanel.classList.remove("show");
-    finishTicket("ganhou");
-    setTimeout(() => showWinOverlay(item), 400);
+    score += 1;
+    roundResults.push({ title: GAME_CONFIG.rounds[currentRound].title, acertou: true });
+    setTimeout(() => showRoundOverlay(item, true), 400);
   } else {
     wrongCount += 1;
     wrongIds.add(item.id);
     cardEl.classList.add("wrong", "shake");
     setTimeout(() => cardEl.classList.remove("shake"), 400);
 
-    if (wrongCount > GAME_CONFIG.maxErros) {
+    if (wrongCount > GAME_CONFIG.maxErrosPorRodada) {
       solved = true;
-      finishTicket("perdeu");
-      setTimeout(() => showLoseOverlay(item), 400);
+      const intruderItem = GAME_CONFIG.rounds[currentRound].items.find((i) => i.isIntruder);
+      roundResults.push({ title: GAME_CONFIG.rounds[currentRound].title, acertou: false });
+      setTimeout(() => showRoundOverlay(intruderItem, false), 400);
     } else {
       updateHint();
       showWrongFeedback(item);
     }
-  }
-}
-
-async function finishTicket(resultado) {
-  // Cupom mestre e modo sem cupom não gravam nada no Firestore.
-  if (isMaster || freePlay || !ticketRef) return;
-  try {
-    await updateDoc(ticketRef, { resultado, finalizadoEm: serverTimestamp() });
-  } catch (err) {
-    // Se a gravação falhar (ex: sem internet), o jogador ainda vê o resultado na tela;
-    // a equipe confere manualmente pelo painel /admin se precisar.
-    console.error("Falha ao salvar resultado do cupom:", err);
   }
 }
 
@@ -283,72 +283,52 @@ function showWrongFeedback(item) {
   feedbackPanel.classList.add("show");
 }
 
-function buildOtherItemsList(listEl) {
-  listEl.innerHTML = "";
-  GAME_CONFIG.items
+function buildOtherItemsList(round) {
+  roundResultList.innerHTML = "";
+  round.items
     .filter((item) => !item.isIntruder)
     .forEach((item) => {
       const li = document.createElement("li");
-      li.innerHTML = `
-        <strong><span class="li-emoji">${item.emoji}</span>${item.name}</strong>
-        ${item.origin}
-      `;
-      listEl.appendChild(li);
+      li.innerHTML = `<strong>${item.name}</strong>${item.origin}`;
+      roundResultList.appendChild(li);
     });
 }
 
-function showWinOverlay(intruderItem) {
-  winTitle.textContent = `${intruderItem.emoji} ${intruderItem.name} é o Intruso!`;
-  winExplanation.textContent = intruderItem.origin;
-  buildOtherItemsList(winList);
+function showRoundOverlay(intruderItem, acertou) {
+  const round = GAME_CONFIG.rounds[currentRound];
+  roundStamp.textContent = acertou ? "ACERTOU!" : "ERA ESSE!";
+  roundStamp.className = acertou ? "stamp stamp-gold" : "stamp stamp-red";
+  roundResultTitle.textContent = `${intruderItem.name} é o Intruso!`;
+  roundResultExplanation.textContent = intruderItem.origin;
+  buildOtherItemsList(round);
 
-  if (freePlay) {
-    winStamp.textContent = "PARABÉNS! 🎉";
-    prizeBox.classList.add("prize-box-warning");
-    prizeBox.innerHTML = `
-      <p class="prize-text">⚠️ Modo sem cupom — essa partida não vale bala. Foi só um teste!</p>
-    `;
-  } else {
-    winStamp.textContent = "GANHOU! 🎉";
-    prizeBox.classList.remove("prize-box-warning");
-    prizeBox.innerHTML = `
-      <p class="prize-text">Mostra essa tela pra equipe e pega sua bala!</p>
-      <p class="prize-code">Cupom: <strong id="win-ticket-code">${ticketCode}</strong></p>
-    `;
-  }
+  const isLastRound = currentRound === GAME_CONFIG.rounds.length - 1;
+  nextRoundBtn.textContent = isLastRound ? "VER RESULTADO FINAL" : "PRÓXIMA RODADA";
 
-  winOverlay.classList.remove("hidden");
+  roundOverlay.classList.remove("hidden");
 }
 
-function showLoseOverlay() {
-  const intruderItem = GAME_CONFIG.items.find((item) => item.isIntruder);
-  loseExplanation.textContent = `O intruso era ${intruderItem.emoji} ${intruderItem.name}: ${intruderItem.origin}`;
-  buildOtherItemsList(loseList);
-  loseFooter.textContent = freePlay
-    ? "Isso foi só um teste (modo sem cupom). Pega um cupom de verdade com a equipe pra jogar valendo!"
-    : "Esse cupom já foi usado. Pega um cupom novo pra tentar de novo!";
-  loseOverlay.classList.remove("hidden");
+function goToNextRound() {
+  roundOverlay.classList.add("hidden");
+  const isLastRound = currentRound === GAME_CONFIG.rounds.length - 1;
+  if (isLastRound) {
+    showFinalScreen();
+  } else {
+    currentRound += 1;
+    startRound();
+  }
+}
+
+function showFinalScreen() {
+  showScreen(finalScreen);
+  finalScoreEl.textContent = `${score} de ${GAME_CONFIG.rounds.length} rodadas certas`;
+  finalBreakdown.innerHTML = roundResults.map((r, i) => `
+    <li class="${r.acertou ? "breakdown-ok" : "breakdown-fail"}">
+      Rodada ${i + 1} — ${r.title}: ${r.acertou ? "acertou" : "errou"}
+    </li>
+  `).join("");
 }
 
 playBtn.addEventListener("click", startGame);
-
-entryForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const code = entryInput.value.trim().toUpperCase();
-  if (!code) return;
-  entryError.classList.add("hidden");
-  history.replaceState(null, "", `?codigo=${encodeURIComponent(code)}`);
-  await validateCode(code);
-});
-
-freePlayBtn.addEventListener("click", () => {
-  ticketCode = null;
-  ticketRef = null;
-  isMaster = false;
-  freePlay = true;
-  history.replaceState(null, "", window.location.pathname);
-  startTicketCode.textContent = "modo teste";
-  showScreen("start");
-});
-
-init();
+nextRoundBtn.addEventListener("click", goToNextRound);
+playAgainBtn.addEventListener("click", startGame);
