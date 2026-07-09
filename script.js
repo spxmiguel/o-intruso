@@ -6,7 +6,12 @@
    "name" e "origin". Imagens ficam em /images.
    ========================================================= */
 
-const ADMIN_EMAIL = "equipe@ointruso.app"; // login fixo da equipe (a senha nunca fica aqui)
+const ADMIN_EMAIL = "equipe@ointruso.app"; // login fixo da equipe
+// O Firebase exige senha com 6+ caracteres, então o que a equipe digita
+// (ex: "tuts") é completado com esse sufixo antes de mandar pro Firebase.
+// Aviso: isso é só uma tela pra digitar menos, não segurança extra — o
+// segredo de verdade continua sendo só o que a equipe digita.
+const ADMIN_PASSWORD_SUFFIX = "1943";
 
 const GAME_CONFIG = {
   maxErrosPorRodada: 1, // erros permitidos antes de a rodada ser considerada errada
@@ -467,10 +472,12 @@ function showRoundOverlay(intruderItem, acertou) {
   nextRoundBtn.textContent = isLastRound ? "VER RESULTADO FINAL" : "PRÓXIMA RODADA";
 
   roundOverlay.classList.remove("hidden");
+  document.body.classList.add("overlay-open");
 }
 
 function goToNextRound() {
   roundOverlay.classList.add("hidden");
+  document.body.classList.remove("overlay-open");
   const isLastRound = currentRound === GAME_CONFIG.rounds.length - 1;
   if (isLastRound) {
     finishGame();
@@ -540,9 +547,8 @@ async function handleAdminUnlock() {
 
   adminUnlockBtn.disabled = true;
   try {
-    // A senha nunca fica no código-fonte: ela é conferida pelo próprio
-    // servidor de autenticação do Firebase, não pelo navegador.
-    await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
+    // A conferência de verdade acontece no servidor do Firebase, não aqui.
+    await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password + ADMIN_PASSWORD_SUFFIX);
     await deleteDoc(deviceRef);
     adminUnlockMsg.textContent = "Desbloqueado! Recarregando...";
     adminUnlockMsg.className = "admin-unlock-msg admin-unlock-ok";
