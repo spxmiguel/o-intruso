@@ -71,7 +71,7 @@ const GAME_CONFIG = {
           name: "M&M's",
           img: "images/mms.jpg",
           isIntruder: false,
-          origin: "Criado em 1941 por Forrest Mars, inspirado nos doces com casquinha de açúcar que ele viu soldados comerem na Guerra Civil Espanhola pra não derreter no calor. Viraram parte da ração militar americana e só chegaram ao mercado civil depois da guerra."
+          origin: "Criado em 1941 por Forrest Mars, inspirado nos doces com casquinha de açúcar — feita pra não derreter no calor — que ele viu soldados comerem na Guerra Civil Espanhola. Viraram parte da ração militar americana e só chegaram ao mercado civil depois da guerra."
         },
         {
           id: "cafe-soluvel",
@@ -99,7 +99,7 @@ const GAME_CONFIG = {
           name: "Óculos aviador",
           img: "images/oculos-aviador.jpg",
           isIntruder: false,
-          origin: "Desenvolvidos pela Ray-Ban em 1936-37 pros pilotos da força aérea americana se protegerem do sol em altitude. Ficaram famosos mundialmente por fotos de generais e pilotos usando eles durante a guerra."
+          origin: "Desenvolvidos pela Ray-Ban em 1936–37 pros pilotos da força aérea americana se protegerem do sol em altitude. Ficaram famosos mundialmente por fotos de generais e pilotos usando eles durante a guerra."
         },
         {
           id: "energetico",
@@ -391,7 +391,7 @@ function updateHint() {
   const restantes = GAME_CONFIG.maxErrosPorRodada - wrongCount;
   gameHint.textContent = restantes <= 0
     ? "Última chance! Toque no objeto certo."
-    : "Toque no objeto que não tem origem na guerra";
+    : "Toque no objeto que não tem origem na guerra.";
 }
 
 function renderGrid(round) {
