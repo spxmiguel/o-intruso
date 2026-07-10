@@ -128,18 +128,18 @@ const GAME_CONFIG = {
           origin: "O cianoacrilato foi descoberto por acaso em 1942 por um cientista tentando criar miras de fuzil transparentes pra guerra. Só virou a cola instantânea que conhecemos anos depois."
         },
         {
-          id: "penicilina",
-          name: "Penicilina",
-          img: "images/penicilina.jpg",
+          id: "walkie-talkie",
+          name: "Walkie-talkie",
+          img: "images/walkie-talkie.jpg",
           isIntruder: false,
-          origin: "Foi descoberta em 1928, mas a produção em larga escala só aconteceu durante a guerra, numa corrida acelerada pra tratar milhares de soldados feridos — foi a guerra que transformou a penicilina num remédio acessível de verdade."
+          origin: "Desenvolvido durante a Segunda Guerra Mundial pra comunicação de infantaria em campo de batalha — a Motorola criou um dos primeiros modelos portáteis pro exército americano. Depois da guerra, virou item comum em segurança, no trabalho e até como brinquedo."
         },
         {
-          id: "silly-putty",
-          name: "Massinha maluca (Silly Putty)",
-          img: "images/silly-putty.jpg",
+          id: "acrilico",
+          name: "Acrílico",
+          img: "images/acrilico.jpg",
           isIntruder: false,
-          origin: "Surgiu em 1943 quando um cientista tentava criar um substituto sintético pra borracha, que estava racionada por causa do esforço de guerra."
+          origin: "Já existia desde 1933, mas a Segunda Guerra multiplicou seu uso: virou para-brisa e cúpula de avião dos dois lados do conflito, além de janela de periscópio de submarino, por ser leve e mais resistente a estilhaços que o vidro comum."
         },
         {
           id: "slinky",
