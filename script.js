@@ -20,11 +20,11 @@ const GAME_CONFIG = {
       title: "Objetos do dia a dia",
       items: [
         {
-          id: "relogio",
-          name: "Relógio de pulso",
-          img: "images/relogio.jpg",
+          id: "isqueiro-zippo",
+          name: "Isqueiro Zippo",
+          img: "images/isqueiro-zippo.jpg",
           isIntruder: false,
-          origin: "Antes da guerra, o relógio de bolso era o padrão. Nas trincheiras os soldados precisavam sincronizar ataques com as mãos livres, então passaram a usar relógios presos ao pulso — depois da guerra o hábito virou moda civil."
+          origin: "Criado em 1932, mas em 1943 a fábrica parou de vender pro público e passou a produzir só pras tropas americanas. Foi aí que ganhou aquele acabamento preto fosco: o metal cromado brilhante virou munição, e sobrou só um revestimento preto mais simples. Voltou a vender pra civis depois da guerra."
         },
         {
           id: "fanta",
@@ -45,7 +45,7 @@ const GAME_CONFIG = {
           name: "Meia de nylon",
           img: "images/meia-nylon.jpg",
           isIntruder: false,
-          origin: "O nylon já existia, mas sua produção foi escalada pela DuPont para uso militar — paraquedas, cordas, coletes. Depois da guerra, sobrou material e a indústria têxtil o popularizou nas meias femininas."
+          origin: "As meias de nylon fizeram sucesso quando chegaram às lojas em 1940, mas assim que a guerra começou a DuPont parou de vender pro público: toda a produção virou paraquedas, cordas e outros itens militares. Só voltaram a fazer meias depois que a guerra acabou."
         },
         {
           id: "ziper",
@@ -146,7 +146,7 @@ const GAME_CONFIG = {
           name: "Mola brinquedo (Slinky)",
           img: "images/slinky.jpg",
           isIntruder: false,
-          origin: "Inventada em 1943 por um engenheiro naval que testava molas pra estabilizar equipamentos sensíveis em navios de guerra. Uma mola caiu da mesa dele, ficou 'andando', e virou um dos brinquedos mais vendidos da história."
+          origin: "Inventada em 1943 por um engenheiro naval que testava molas pra estabilizar equipamentos sensíveis em navios de guerra. Uma mola caiu da mesa dele, ficou 'andando' e virou um dos brinquedos mais vendidos da história."
         },
         {
           id: "velcro",
